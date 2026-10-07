@@ -53,7 +53,7 @@
         .box-aksara { min-height: 40px; font-size: 1.8rem; line-height: 1.6; color: #0f172a; word-wrap: break-word; white-space: pre-wrap;}
         
         .box-jgst { font-family: 'Gentium Plus', serif; font-size: 1.25rem; color: #b91c1c; font-weight: bold; word-wrap: break-word; white-space: pre-wrap;}
-        .box-ipa { font-family: 'Gentium Plus', serif; font-size: 1.25rem; color: #047857; word-wrap: break-word; white-space: pre-wrap;}
+        .box-ipa { font-family: 'Gentium Plus', serif; font-size: 1.25rem; color: #047857; font-weight: bold; word-wrap: break-word; white-space: pre-wrap;}
 
         .font-ngayogyann { font-family: 'Ngayogyann', 'Noto Sans Javanese', sans-serif; }
         .font-ngayogyan { font-family: 'Ngayogyan', 'Noto Sans Javanese', sans-serif; }
@@ -277,7 +277,7 @@
 
 
     // ==========================================
-    // LOGIKA UI & KONVERSI IPA LENGKAP
+    // LOGIKA UI & KONVERSI IPA KATA MURNI
     // ==========================================
     const Modules = { kbj: null, sriwedari: null, simplified: null, tradisional: null, carakawi: null };
 
@@ -305,7 +305,7 @@
         processTransliteration();
     }
 
-    // Fungsi Konversi Fonem IPA Presisi
+    // Fungsi Konversi Fonem IPA Terisolasi PER KATA
     function convertJGSTtoIPA(jgstStr) {
         if (!jgstStr || jgstStr === '-') return '-';
         
@@ -314,31 +314,40 @@
         let ipaWords = words.map(word => {
             if (/^\s+$/.test(word)) return word;
             
-            let str = word.toLowerCase();
+            // Bersihkan string kata dari karakter kontrol / pangkon
+            let str = word.toLowerCase().replace(/\/$/, '');
             const vowels = 'aāiīuūěéèeoꜽꜷṛḷ';
 
-            if (str.endsWith('a')) {
-                str = str.replace(/a/g, 'ɔ');
-            } else {
-                let isClosed = new RegExp(`[^${vowels}]$`).test(str.replace(/\/$/, '')) || str.endsWith('/');
-                if (isClosed) {
-                    str = str.replace(new RegExp(`([${vowels}])([^${vowels}]*\\/?)$`), function(match, vowel, cons) {
-                        if (vowel === 'i') return 'e' + cons; 
-                        if (vowel === 'u') return 'o' + cons; 
-                        if (vowel === 'é' || vowel === 'è' || vowel === 'e') return 'ɛ' + cons; 
-                        if (vowel === 'o') return 'ɔ' + cons; 
-                        return vowel + cons;
-                    });
-                    if (/ɔ[^aeiouɔɛ]*\/?$/.test(str)) str = str.replace(/o/g, 'ɔ');
-                    if (/ɛ[^aeiouɔɛ]*\/?$/.test(str)) str = str.replace(/[éèe]/g, 'ɛ');
+            // Pengecekan Eksplisit Suku Kata Terakhir Berdasarkan Karakter Terakhir Kata
+            let lastChar = str.slice(-1);
+            let isVowelEnd = /[aāiīuūěéèeoꜽꜷ]/.test(lastChar);
+
+            if (isVowelEnd) {
+                // Suku kata terakhir terbuka
+                if (lastChar === 'a') {
+                    // Semua 'a' pada kata berakhiran vokal terbuka 'a' menjadi 'ɔ' (bata -> [bɔtɔ])
+                    str = str.replace(/a/g, 'ɔ');
                 }
+            } else {
+                // Suku kata terakhir tertutup konsonan
+                str = str.replace(new RegExp(`([${vowels}])([^${vowels}]*)$`), function(match, vowel, cons) {
+                    if (vowel === 'i') return 'e' + cons; // i miring -> e (tape)
+                    if (vowel === 'u') return 'o' + cons; // u miring -> o (toko)
+                    if (vowel === 'é' || vowel === 'è' || vowel === 'e') return 'ɛ' + cons; // e miring -> ɛ (karet)
+                    if (vowel === 'o') return 'ɔ' + cons; // o miring -> ɔ (botol)
+                    return vowel + cons; // a miring -> tetap a
+                });
+                
+                // Vowel Harmony sederhana jika akhir kata vokal miring
+                if (/ɔ[^aeiouɔɛ]*$/.test(str)) str = str.replace(/o/g, 'ɔ');
+                if (/ɛ[^aeiouɔɛ]*$/.test(str)) str = str.replace(/[éèe]/g, 'ɛ');
             }
 
+            // Normalisasi Sisa Vokal Jejeg
             str = str.replace(/[éè]/g, 'e'); 
             str = str.replace(/ě/g, 'ə'); 
-            str = str.replace(/\//g, '');
 
-            // Pemetaan Fonem Konsonan Aksara Jawa ke IPA Standar Internasional
+            // Pemetaan Fonem Konsonan Aksara Jawa ke IPA
             const ipaMap = {
                 'ā': 'aː', 'ī': 'iː', 'ū': 'uː',
                 'ñ': 'ɲ', 'ṅ': 'ŋ', 'ṇ': 'ɳ',
@@ -346,7 +355,7 @@
                 'y': 'j', 'ś': 'ʃ', 'ṣ': 'ʂ', 'ḥ': 'h',
                 'q': 'q', 'x': 'x', 'f': 'f', 'v': 'v', 'z': 'z',
                 'ṃ': 'm', 'ṙ': 'r',
-                'ṛ': 'rə', 'ḷ': 'lə', // Penyesuaian Pa Cerek & Nga Lelet ke IPA
+                'ṛ': 'rə', 'ḷ': 'lə',
                 'ꜽ': 'aɪ', 'ꜷ': 'aʊ'
             };
 
