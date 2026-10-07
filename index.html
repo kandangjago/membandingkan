@@ -4,378 +4,364 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Membandingkan Tata Tulis Aksara Jawa</title>
-    
-    <!-- Load Fonts: PT Serif for UI -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=PT+Serif:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-    
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    
     <style>
-        :root {
-            font-family: 'PT Serif', serif;
-        }
-
         @font-face {
             font-family: 'Ngayogyann';
             src: url('ngayogyann.ttf') format('truetype');
-            font-display: swap;
+            font-weight: normal;
+            font-style: normal;
         }
-
         @font-face {
             font-family: 'Ngayogyan';
             src: url('ngayogyan.ttf') format('truetype');
-            font-display: swap;
+            font-weight: normal;
+            font-style: normal;
         }
 
-        /* 
-           Aksara Jawa Fonts: Size minimal 2rem (here set to 2.5rem for better clarity)
-        */
-        .font-jawa-nn {
-            font-family: 'Ngayogyann', serif;
-            font-size: 2.5rem;
-            line-height: 1.6;
+        :root {
+            --primary: #0056b3;
+            --bg: #f8f9fa;
+            --card-bg: #ffffff;
+            --text: #333333;
+            --border: #e2e8f0;
         }
 
-        .font-jawa-n {
-            font-family: 'Ngayogyan', serif;
-            font-size: 2.5rem;
-            line-height: 1.6;
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
 
         body {
-            background: linear-gradient(135deg, #1e1b4b 0%, #3b0764 50%, #000000 100%);
-            color: #f8fafc;
-            min-height: 100vh;
-            overflow-x: hidden;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            padding: 20px;
+            line-height: 1.6;
         }
 
-        .text-gradient {
-            background: linear-gradient(to right, #f472b6, #fbbf24);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
         }
 
-        /* 3D Glassmorphism Cards */
-        .card-3d {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-top: 1px solid rgba(255, 255, 255, 0.2);
-            border-left: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 
-                0 10px 30px rgba(0, 0, 0, 0.6),
-                inset 0 1px 0 rgba(255, 255, 255, 0.1);
-            border-radius: 1.25rem;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        h1 {
+            font-size: 1.8rem;
+            color: var(--primary);
+            border-bottom: 3px solid var(--primary);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
         }
 
-        .card-3d:hover {
-            transform: translateY(-5px);
-            box-shadow: 
-                0 15px 35px rgba(0, 0, 0, 0.7),
-                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        .input-section {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            margin-bottom: 25px;
         }
 
-        /* 3D Button */
-        .btn-3d {
-            background: linear-gradient(to bottom, #d946ef, #9333ea);
-            border: none;
-            border-radius: 0.75rem;
-            color: white;
-            padding: 0.75rem 1.5rem;
-            font-weight: 700;
-            box-shadow: 
-                0 6px 0 #581c87,
-                0 10px 20px rgba(0, 0, 0, 0.4),
-                inset 0 1px 1px rgba(255, 255, 255, 0.4);
-            transition: all 0.1s ease;
-            cursor: pointer;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 8px;
+            font-size: 1.1rem;
         }
 
-        .btn-3d:active {
-            transform: translateY(6px);
-            box-shadow: 
-                0 0 0 #581c87,
-                0 4px 10px rgba(0, 0, 0, 0.4),
-                inset 0 1px 1px rgba(255, 255, 255, 0.4);
+        textarea {
+            width: 100%;
+            height: 100px;
+            padding: 12px;
+            font-size: 1.1rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            resize: vertical;
+            font-family: inherit;
         }
 
-        /* Custom Input */
-        .input-neumorphic {
-            background: rgba(0, 0, 0, 0.3);
-            border: 2px solid rgba(255, 255, 255, 0.1);
-            color: white;
-            box-shadow: inset 0 4px 6px rgba(0, 0, 0, 0.6);
-            border-radius: 1rem;
-            font-size: 1.125rem;
-            transition: border-color 0.3s;
-        }
-
-        .input-neumorphic:focus {
+        textarea:focus {
             outline: none;
-            border-color: #d946ef;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 86, 179, 0.2);
         }
 
-        /* Fluid Grid using clamp */
-        .fluid-grid {
+        .grid-container {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(clamp(280px, 30vw, 450px), 1fr));
-            gap: 1.5rem;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
         }
-        
-        .loading-spinner {
-            display: inline-block;
-            width: 1rem;
-            height: 1rem;
-            border: 2px solid rgba(255,255,255,0.3);
-            border-radius: 50%;
-            border-top-color: #fff;
-            animation: spin 1s ease-in-out infinite;
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            display: flex;
+            flex-direction: column;
         }
-        
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+
+        .card-header {
+            font-size: 1rem;
+            font-weight: bold;
+            color: #1e293b;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 8px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .badge {
+            font-size: 0.75rem;
+            background: #e2e8f0;
+            color: #475569;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: normal;
+        }
+
+        .output-box {
+            min-height: 80px;
+            word-wrap: break-word;
+            white-space: pre-wrap;
+            font-size: 1.6rem;
+            line-height: 1.8;
+            color: #0f172a;
+        }
+
+        /* Styling Font Spesifik */
+        .font-ngayogyann {
+            font-family: 'Ngayogyann', 'Noto Sans Javanese', sans-serif;
+        }
+
+        .font-ngayogyan {
+            font-family: 'Ngayogyan', 'Noto Sans Javanese', sans-serif;
+        }
+
+        .code-output {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1.2rem;
+            color: #b91c1c;
+            font-weight: bold;
+        }
+
+        .ipa-output {
+            font-family: 'Segoe UI', sans-serif;
+            font-size: 1.2rem;
+            color: #047857;
+        }
+
+        .footer-info {
+            margin-top: 30px;
+            font-size: 0.85rem;
+            color: #64748b;
+            text-align: center;
         }
     </style>
 </head>
-<body class="p-4 md:p-8 flex flex-col items-center">
+<body>
 
-    <div class="w-full max-w-7xl mb-8 flex flex-col md:flex-row justify-between items-center gap-6">
-        <h1 class="text-3xl md:text-5xl font-bold text-center md:text-left text-gradient drop-shadow-lg tracking-wide">
-            Membandingkan Tata Tulis Aksara Jawa
-        </h1>
-        <button class="btn-3d whitespace-nowrap" onclick="navigateToParamasastra()">
-            Aplikasi Paramasastra (Morfologi Jawa)
-        </button>
+<div class="container">
+    <h1>Membandingkan Tata Tulis Aksara Jawa</h1>
+
+    <div class="input-section">
+        <label for="inputLatin">Huruf Latin</label>
+        <textarea id="inputLatin" placeholder="Ketik teks Latin di sini... (contoh: wewaton, sriwedari, kawi, pasar)"></textarea>
     </div>
 
-    <div class="w-full max-w-7xl mb-12">
-        <div class="card-3d p-6 md:p-8">
-            <label for="latinInput" class="block text-xl font-bold mb-4 text-pink-300">
-                Huruf Latin
-            </label>
-            <textarea id="latinInput" rows="4" 
-                class="input-neumorphic w-full p-4 resize-y"
-                placeholder="Ketik kalimat atau kata dalam huruf Latin di sini..."></textarea>
-            
-            <div id="statusIndicator" class="mt-3 text-sm text-purple-300 flex items-center gap-2 h-5">
-                <span class="loading-spinner"></span> Memuat modul aksara jawa...
+    <div class="grid-container">
+        <!-- 1. KBJ -->
+        <div class="card">
+            <div class="card-header">
+                1. KBJ (kbj.js)
+                <span class="badge">ngayogyann.ttf</span>
             </div>
+            <div id="outKBJ" class="output-box font-ngayogyann">-</div>
+        </div>
+
+        <!-- 2. Sriwedari -->
+        <div class="card">
+            <div class="card-header">
+                2. Sriwedari (sriwedari.js)
+                <span class="badge">ngayogyann.ttf</span>
+            </div>
+            <div id="outSriwedari" class="output-box font-ngayogyann">-</div>
+        </div>
+
+        <!-- 3. KAJ Simplified -->
+        <div class="card">
+            <div class="card-header">
+                3. KAJ Simplified (simplified.js)
+                <span class="badge">ngayogyann.ttf</span>
+            </div>
+            <div id="outSimplified" class="output-box font-ngayogyann">-</div>
+        </div>
+
+        <!-- 4. KAJ Tradisional -->
+        <div class="card">
+            <div class="card-header">
+                4. KAJ Tradisional (tradisional.js)
+                <span class="badge">ngayogyan.ttf</span>
+            </div>
+            <div id="outTradisional" class="output-box font-ngayogyan">-</div>
+        </div>
+
+        <!-- 5. Cara Kawi -->
+        <div class="card">
+            <div class="card-header">
+                5. Cara Kawi (carakawi.js)
+                <span class="badge">ngayogyann.ttf</span>
+            </div>
+            <div id="outCaraKawi" class="output-box font-ngayogyann">-</div>
+        </div>
+
+        <!-- 6. JGST -->
+        <div class="card">
+            <div class="card-header">
+                6. JGST (jgst.js)
+                <span class="badge">Transliterasi Aksara</span>
+            </div>
+            <div id="outJGST" class="output-box code-output">-</div>
+        </div>
+
+        <!-- 7. IPA -->
+        <div class="card">
+            <div class="card-header">
+                7. IPA (Pelafalan)
+                <span class="badge">Fonetik</span>
+            </div>
+            <div id="outIPA" class="output-box ipa-output">-</div>
         </div>
     </div>
 
-    <div class="w-full max-w-7xl fluid-grid pb-12">
+    <div class="footer-info">
+        Aplikasi Komparasi Tata Tulis, JGST & IPA Aksara Jawa.
+    </div>
+</div>
+
+<!-- Muat file JS external -->
+<script src="jgst.js"></script>
+
+<script>
+    // Module storage untuk mengisolasi variabel global dari file-file converter
+    const Modules = {
+        kbj: null,
+        sriwedari: null,
+        simplified: null,
+        tradisional: null,
+        carakawi: null
+    };
+
+    // Fungsi pemuat skrip terisolasi
+    async function loadScriptAsModule(url, fnName) {
+        try {
+            const resp = await fetch(url);
+            const code = await resp.text();
+
+            // Mocking elemen DOM agar skrip external tidak bermasalah saat dipanggil
+            const sandbox = {
+                document: {
+                    getElementById: () => ({
+                        addEventListener: () => {},
+                        style: {},
+                        value: '',
+                        textContent: '',
+                        innerText: ''
+                    })
+                },
+                window: {},
+                navigator: { clipboard: { writeText: () => Promise.resolve() } },
+                alert: () => {}
+            };
+
+            const factory = new Function('document', 'window', 'navigator', 'alert', code + `\n return typeof ${fnName} !== 'undefined' ? ${fnName} : null;`);
+            return factory(sandbox.document, sandbox.window, sandbox.navigator, sandbox.alert);
+        } catch (e) {
+            console.error(`Gagal memuat ${url}:`, e);
+            return null;
+        }
+    }
+
+    // Inisialisasi pemuatan skrip
+    async function initModules() {
+        Modules.kbj = await loadScriptAsModule('kbj.js', 'transliterasiKalimat');
+        Modules.sriwedari = await loadScriptAsModule('sriwedari.js', 'transliterasiKalimat');
+        Modules.simplified = await loadScriptAsModule('simplified.js', 'transliterasiKalimat');
+        Modules.tradisional = await loadScriptAsModule('tradisional.js', 'transliterateKawi');
+        Modules.carakawi = await loadScriptAsModule('carakawi.js', 'transliterateKawi');
         
-        <!-- Card: KBJ -->
-        <div class="card-3d p-6 flex flex-col h-full">
-            <h2 class="text-lg font-bold text-pink-400 border-b border-white/20 pb-2 mb-4 uppercase tracking-widest">KBJ</h2>
-            <div id="out-kbj" class="font-jawa-nn text-yellow-100 flex-grow break-words text-shadow"></div>
-        </div>
+        // Jalankan transliterasi awal jika ada input awal
+        processTransliteration();
+    }
 
-        <!-- Card: Sriwedari -->
-        <div class="card-3d p-6 flex flex-col h-full">
-            <h2 class="text-lg font-bold text-pink-400 border-b border-white/20 pb-2 mb-4 uppercase tracking-widest">Sriwedari</h2>
-            <div id="out-sriwedari" class="font-jawa-nn text-yellow-100 flex-grow break-words text-shadow"></div>
-        </div>
+    // Fungsi Transliterasi IPA berbasis aturan umum vokal/konsonan Jawa
+    function convertToIPA(text) {
+        if (!text.trim()) return '-';
+        let str = text.toLowerCase()
+            .replace(/e'/g, 'e').replace(/ex/g, 'e')
+            .replace(/ng/g, 'ŋ').replace(/ny/g, 'ɲ')
+            .replace(/dh/g, 'ɖ').replace(/th/g, 'ʈ')
+            .replace(/c/g, 'tʃ').replace(/j/g, 'dʒ')
+            .replace(/y/g, 'j').replace(/r/g, 'r')
+            .replace(/kh/g, 'x').replace(/sy/g, 'ʃ');
 
-        <!-- Card: KAJ Simplified -->
-        <div class="card-3d p-6 flex flex-col h-full">
-            <h2 class="text-lg font-bold text-pink-400 border-b border-white/20 pb-2 mb-4 uppercase tracking-widest">KAJ Simplified</h2>
-            <div id="out-simplified" class="font-jawa-nn text-yellow-100 flex-grow break-words text-shadow"></div>
-        </div>
+        return `[ ${str} ]`;
+    }
 
-        <!-- Card: KAJ Tradisional -->
-        <div class="card-3d p-6 flex flex-col h-full">
-            <h2 class="text-lg font-bold text-pink-400 border-b border-white/20 pb-2 mb-4 uppercase tracking-widest">KAJ Tradisional</h2>
-            <div id="out-tradisional" class="font-jawa-n text-yellow-100 flex-grow break-words text-shadow"></div>
-        </div>
+    // Fungsi pemrosesan utama
+    function processTransliteration() {
+        const input = document.getElementById('inputLatin').value;
 
-        <!-- Card: Cara Kawi -->
-        <div class="card-3d p-6 flex flex-col h-full">
-            <h2 class="text-lg font-bold text-pink-400 border-b border-white/20 pb-2 mb-4 uppercase tracking-widest">Cara Kawi</h2>
-            <div id="out-carakawi" class="font-jawa-nn text-yellow-100 flex-grow break-words text-shadow"></div>
-        </div>
-
-        <!-- Card: JGST -->
-        <div class="card-3d p-6 flex flex-col h-full">
-            <h2 class="text-lg font-bold text-pink-400 border-b border-white/20 pb-2 mb-4 uppercase tracking-widest">JGST</h2>
-            <div id="out-jgst" class="text-2xl font-serif text-blue-200 flex-grow break-words italic tracking-wide"></div>
-        </div>
-
-        <!-- Card: IPA -->
-        <div class="card-3d p-6 flex flex-col h-full">
-            <h2 class="text-lg font-bold text-pink-400 border-b border-white/20 pb-2 mb-4 uppercase tracking-widest">IPA</h2>
-            <div id="out-ipa" class="text-2xl font-sans text-green-200 flex-grow break-words tracking-wide"></div>
-        </div>
-
-    </div>
-
-    <script>
-        // UI Elements
-        const inputElement = document.getElementById('latinInput');
-        const statusIndicator = document.getElementById('statusIndicator');
-        const outputElements = {
-            kbj: document.getElementById('out-kbj'),
-            sriwedari: document.getElementById('out-sriwedari'),
-            simplified: document.getElementById('out-simplified'),
-            tradisional: document.getElementById('out-tradisional'),
-            carakawi: document.getElementById('out-carakawi'),
-            jgst: document.getElementById('out-jgst'),
-            ipa: document.getElementById('out-ipa')
-        };
-
-        // Functional containers
-        let funcKBJ = null;
-        let funcSriwedari = null;
-        let funcSimplified = null;
-        let funcTradisional = null;
-        let funcCaraKawi = null;
-        let funcJGST = null;
-        let isModulesLoaded = false;
-
-        /**
-         * STREAMING_CHUNK: Module Loading with Isolation
-         * Uses `new Function` with mocked DOM objects so standalone scripts 
-         * that try to access document.getElementById or addEventListener 
-         * during initialization won't throw unhandled errors.
-         */
-        async function loadScript(url) {
-            try {
-                const res = await fetch(url);
-                if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
-                const code = await res.text();
-                
-                // MOCK DOM Environment for isolated execution
-                const mockDOM = `
-                    const document = {
-                        getElementById: () => ({
-                            addEventListener: () => {},
-                            style: {},
-                            value: '',
-                            textContent: '',
-                            scrollIntoView: () => {}
-                        })
-                    };
-                    const window = { addEventListener: () => {}, onload: null };
-                    const navigator = { clipboard: { writeText: () => Promise.resolve() } };
-                    const alert = () => {};
-                `;
-
-                return new Function(`
-                    ${mockDOM};
-                    try {
-                        ${code};
-                    } catch(e) {
-                        console.error('Error executing module ${url}: ', e);
-                    }
-                    
-                    // Return the specific transliteration function
-                    if (typeof transliterasiKalimat !== 'undefined') return transliterasiKalimat;
-                    if (typeof transliterateKawi !== 'undefined') return transliterateKawi;
-                    if (typeof transliterateToJGST !== 'undefined') return transliterateToJGST;
-                    
-                    return (t) => "Function not found in ${url}";
-                `)();
-            } catch (error) {
-                console.error(`Gagal memuat ${url}:`, error);
-                return (t) => `Error loading ${url}`;
-            }
+        if (!input.trim()) {
+            document.getElementById('outKBJ').textContent = '-';
+            document.getElementById('outSriwedari').textContent = '-';
+            document.getElementById('outSimplified').textContent = '-';
+            document.getElementById('outTradisional').textContent = '-';
+            document.getElementById('outCaraKawi').textContent = '-';
+            document.getElementById('outJGST').textContent = '-';
+            document.getElementById('outIPA').textContent = '-';
+            return;
         }
 
-        function transliterateIPA(text) {
-            if (!text) return '';
-            let t = text.toLowerCase();
-            // Digraphs & Exceptions
-            t = t.replace(/ng/g, 'ŋ')
-                 .replace(/ny/g, 'ɲ')
-                 .replace(/dh/g, 'ɖ')
-                 .replace(/th/g, 'ʈ')
-                 .replace(/c/g, 'tʃ')
-                 .replace(/j/g, 'dʒ')
-                 .replace(/y/g, 'j')
-                 .replace(/é/g, 'e')
-                 .replace(/è/g, 'ɛ')
-                 .replace(/e/g, 'ə')
-                 .replace(/kh/g, 'x')
-                 .replace(/sy/g, 'ʃ');
-            return `/${t}/`;
+        // 1. KBJ
+        const resKBJ = Modules.kbj ? Modules.kbj(input) : '-';
+        document.getElementById('outKBJ').textContent = resKBJ;
+
+        // 2. Sriwedari
+        const resSriwedari = Modules.sriwedari ? Modules.sriwedari(input) : '-';
+        document.getElementById('outSriwedari').textContent = resSriwedari;
+
+        // 3. Simplified
+        const resSimplified = Modules.simplified ? Modules.simplified(input) : '-';
+        document.getElementById('outSimplified').textContent = resSimplified;
+
+        // 4. Tradisional
+        const resTradisional = Modules.tradisional ? Modules.tradisional(input) : '-';
+        document.getElementById('outTradisional').textContent = resTradisional;
+
+        // 5. Cara Kawi
+        const resCaraKawi = Modules.carakawi ? Modules.carakawi(input) : '-';
+        document.getElementById('outCaraKawi').textContent = resCaraKawi;
+
+        // 6. JGST (Mengambil hasil transliterasi Aksara Jawa Sriwedari/Simplified lalu diurai via jgst.js)
+        if (typeof transliterateToJGST === 'function' && resSimplified !== '-') {
+            document.getElementById('outJGST').textContent = transliterateToJGST(resSimplified);
+        } else {
+            document.getElementById('outJGST').textContent = '-';
         }
 
-        async function initModules() {
-            try {
-                const results = await Promise.all([
-                    loadScript('kbj.js'),
-                    loadScript('sriwedari.js'),
-                    loadScript('simplified.js'),
-                    loadScript('tradisional.js'),
-                    loadScript('carakawi.js'),
-                    loadScript('jgst.js')
-                ]);
+        // 7. IPA
+        document.getElementById('outIPA').textContent = convertToIPA(input);
+    }
 
-                [funcKBJ, funcSriwedari, funcSimplified, funcTradisional, funcCaraKawi, funcJGST] = results;
-                
-                isModulesLoaded = true;
-                statusIndicator.innerHTML = '<span class="text-green-400">✓ Modul berhasil dimuat. Siap transliterasi.</span>';
-                setTimeout(() => { statusIndicator.style.display = 'none'; }, 3000);
-                
-                // Trigger an initial processing if input is already filled
-                processAll();
-            } catch (err) {
-                statusIndicator.innerHTML = '<span class="text-red-400">✗ Gagal memuat beberapa modul.</span>';
-                console.error("Initialization error:", err);
-            }
-        }
+    // Event Listener Input
+    document.getElementById('inputLatin').addEventListener('input', processTransliteration);
 
-        function processAll() {
-            if (!isModulesLoaded) return;
-            const text = inputElement.value;
-            
-            if (!text.trim()) {
-                Object.values(outputElements).forEach(el => el.textContent = '');
-                return;
-            }
+    // Jalankan pemuatan skrip saat dokumen siap
+    window.addEventListener('DOMContentLoaded', initModules);
+</script>
 
-            // Execute all transliterations safely
-            try { outputElements.kbj.textContent = funcKBJ ? funcKBJ(text) : ''; } catch (e) {}
-            try { outputElements.sriwedari.textContent = funcSriwedari ? funcSriwedari(text) : ''; } catch (e) {}
-            try { outputElements.simplified.textContent = funcSimplified ? funcSimplified(text) : ''; } catch (e) {}
-            try { outputElements.tradisional.textContent = funcTradisional ? funcTradisional(text) : ''; } catch (e) {}
-            try { outputElements.carakawi.textContent = funcCaraKawi ? funcCaraKawi(text) : ''; } catch (e) {}
-            try { outputElements.jgst.textContent = funcJGST ? funcJGST(text) : ''; } catch (e) {}
-            
-            // IPA
-            outputElements.ipa.textContent = transliterateIPA(text);
-        }
-
-        let debounceTimeout;
-        inputElement.addEventListener('input', () => {
-            clearTimeout(debounceTimeout);
-            debounceTimeout = setTimeout(processAll, 300); // 300ms debounce
-        });
-
-        // Dummy Navigation function
-        function navigateToParamasastra() {
-            // Replace with actual navigation logic or scroll if on the same page
-            const messageBox = document.createElement('div');
-            messageBox.className = 'fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-indigo-900 text-white p-6 rounded-2xl shadow-2xl z-50 text-center border border-indigo-400';
-            messageBox.innerHTML = `
-                <h3 class="text-xl font-bold mb-2">Navigasi</h3>
-                <p class="mb-4">Fitur ini akan mengarahkan ke Aplikasi Paramasastra.</p>
-                <button class="bg-indigo-600 px-4 py-2 rounded-lg font-bold" onclick="this.parentElement.remove()">Tutup</button>
-            `;
-            document.body.appendChild(messageBox);
-        }
-
-        // Initialize on load
-        window.onload = initModules;
-
-    </script>
 </body>
 </html>
