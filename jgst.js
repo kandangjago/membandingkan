@@ -1,5 +1,5 @@
 /**
- * jgst.js (Diperbarui dengan Vokal Inheren /a/ pada Wyanjana)
+ * jgst.js (Diperbarui dengan Vokal Inheren /a/ dan Penanganan Spasi/Pemisah Kata)
  * Pemetaan Aksara Jawa ke Latin JGST.
  */
 
@@ -68,7 +68,7 @@ const jgstMap = {
   '\uA9B2': 'ha',       // Ha
   '\uA9B3': '',        // Cecak telu / Nukta
 
-  // Tanda Baca
+  // Tanda Baca Pada Aksara Jawa
   '\uA9C8': ',',
   '\uA9C9': '.',
 
@@ -97,7 +97,7 @@ const rekanMap = {
 
 // Peta Sandhangan Swara & Pangkon
 const sandhanganMap = {
-  '\uA9B4': 'ā',       // Tarung (mengubah a -> ā)
+  '\uA9B4': 'ā',       // Tarung
   '\uA9B5': 'o',       // Tolong varian glyph
   '\uA9B6': 'i',       // Wulu
   '\uA9B7': 'ī',       // Wulu Melik
@@ -114,7 +114,7 @@ const sandhanganMap = {
   '\uA9BD': 'ṛě',      // Cakra Keret
   '\uA9BE': 'ya',      // Pengkal
   '\uA9BF': 'ra',      // Cakra
-  '\uA9C0': ''         // Pangkon / Virama (Menghilangkan vokal 'a')
+  '\uA9C0': '/'        // Pangkon / Virama
 };
 
 function transliterateToJGST(text) {
@@ -125,7 +125,20 @@ function transliterateToJGST(text) {
     let char1 = text[i];
     let char2 = i + 1 < text.length ? text.substring(i, i + 2) : "";
 
-    // 1. Cek Rekan (2 Karakter)
+    // Abaikan / Lewati karakter Zero Width Joiner/Non-Joiner jika ada
+    if (char1 === '\u200C' || char1 === '\u200D') {
+      i++;
+      continue;
+    }
+
+    // Pemrosesan karakter spasi, ganti baris, atau karakter pemisah standar
+    if (/\s/.test(char1)) {
+      result += char1;
+      i++;
+      continue;
+    }
+
+    // 1. Cek Rekan / Kombinasi 2 Karakter
     let baseText = "";
     let matchedLen = 0;
 
@@ -149,17 +162,21 @@ function transliterateToJGST(text) {
 
       if (sandhanganMap[next2] !== undefined) {
         let sandh = sandhanganMap[next2];
-        if (baseText.endsWith('a')) {
-          baseText = baseText.slice(0, -1);
+        if (sandh === '/') {
+          baseText = baseText.endsWith('a') ? baseText.slice(0, -1) + '/' : baseText + '/';
+        } else {
+          if (baseText.endsWith('a')) baseText = baseText.slice(0, -1);
+          baseText += sandh;
         }
-        baseText += sandh;
         i += 2;
       } else if (sandhanganMap[next1] !== undefined) {
         let sandh = sandhanganMap[next1];
-        if (baseText.endsWith('a')) {
-          baseText = baseText.slice(0, -1);
+        if (sandh === '/') {
+          baseText = baseText.endsWith('a') ? baseText.slice(0, -1) + '/' : baseText + '/';
+        } else {
+          if (baseText.endsWith('a')) baseText = baseText.slice(0, -1);
+          baseText += sandh;
         }
-        baseText += sandh;
         i += 1;
       }
 
