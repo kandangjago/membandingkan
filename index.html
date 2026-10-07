@@ -67,7 +67,7 @@
     <div class="input-section">
         <label style="font-weight: bold; display: block; margin-bottom: 8px;">Huruf Latin</label>
         <textarea id="inputLatin" 
-                  placeholder="Ketik teks di sini... (contoh: kriya, kromoyudho, kyu)" 
+                  placeholder="Ketik teks di sini... (contoh: kriya, lelema, reksa, botol, tape)" 
                   autocapitalize="none" 
                   autocomplete="off" 
                   autocorrect="off" 
@@ -234,7 +234,6 @@
             if (matchedLen > 0) {
                 i += matchedLen;
                 
-                // LOOP untuk mengeksekusi semua sandhangan secara beruntun (misal: cakra + wulu)
                 while (i < text.length) {
                     let next2 = i + 1 < text.length ? text.substring(i, i + 2) : "";
                     let next1 = text[i];
@@ -263,7 +262,7 @@
                     if (consumed > 0) {
                         i += consumed;
                     } else {
-                        break; // Jika tidak ada sandhangan lagi, keluar dari loop inner
+                        break;
                     }
                 }
                 
@@ -278,7 +277,7 @@
 
 
     // ==========================================
-    // LOGIKA UI & INISIALISASI
+    // LOGIKA UI & KONVERSI IPA LENGKAP
     // ==========================================
     const Modules = { kbj: null, sriwedari: null, simplified: null, tradisional: null, carakawi: null };
 
@@ -306,7 +305,7 @@
         processTransliteration();
     }
 
-    // Fungsi Konversi Fonem IPA
+    // Fungsi Konversi Fonem IPA Presisi
     function convertJGSTtoIPA(jgstStr) {
         if (!jgstStr || jgstStr === '-') return '-';
         
@@ -339,13 +338,16 @@
             str = str.replace(/ě/g, 'ə'); 
             str = str.replace(/\//g, '');
 
+            // Pemetaan Fonem Konsonan Aksara Jawa ke IPA Standar Internasional
             const ipaMap = {
                 'ā': 'aː', 'ī': 'iː', 'ū': 'uː',
                 'ñ': 'ɲ', 'ṅ': 'ŋ', 'ṇ': 'ɳ',
                 'ṭ': 'ʈ', 'ḍ': 'ɖ', 'c': 'tʃ', 'j': 'dʒ',
                 'y': 'j', 'ś': 'ʃ', 'ṣ': 'ʂ', 'ḥ': 'h',
                 'q': 'q', 'x': 'x', 'f': 'f', 'v': 'v', 'z': 'z',
-                'ṃ': 'm', 'ṙ': 'r'
+                'ṃ': 'm', 'ṙ': 'r',
+                'ṛ': 'rə', 'ḷ': 'lə', // Penyesuaian Pa Cerek & Nga Lelet ke IPA
+                'ꜽ': 'aɪ', 'ꜷ': 'aʊ'
             };
 
             let res = '';
