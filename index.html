@@ -50,7 +50,7 @@
 
     <div class="input-section">
         <label style="font-weight: bold; display: block; margin-bottom: 8px;">Huruf Latin</label>
-        <textarea id="inputLatin" placeholder="Ketik teks di sini... (contoh: wewaton, sriwedari, kawi, pasar)"></textarea>
+        <textarea id="inputLatin" placeholder="Ketik teks di sini... (contoh: mamimu memo)"></textarea>
     </div>
 
     <div class="grid-container">
@@ -90,7 +90,7 @@
 
         <!-- 3. KAJ Simplified -->
         <div class="card">
-            <div class="card-header">3. Simplified <span class="badge">simplified.js</span></div>
+            <div class="card-header">3. KAJ Simplified <span class="badge">simplified.js</span></div>
             <div class="output-group">
                 <div class="output-label">Aksara Jawa</div>
                 <div id="outSimplified_Aksara" class="box-aksara font-ngayogyann">-</div>
@@ -107,7 +107,7 @@
 
         <!-- 4. KAJ Tradisional -->
         <div class="card">
-            <div class="card-header">4. Tradisional <span class="badge">tradisional.js</span></div>
+            <div class="card-header">4. KAJ Tradisional <span class="badge">tradisional.js</span></div>
             <div class="output-group">
                 <div class="output-label">Aksara Jawa</div>
                 <div id="outTradisional_Aksara" class="box-aksara font-ngayogyan">-</div>
@@ -124,7 +124,7 @@
 
         <!-- 5. Cara Kawi -->
         <div class="card">
-            <div class="card-header">5. Cara Kawi <span class="badge">carakawi.js</span></div>
+            <div class="card-header">5. Cara Kawi (Mardi Kawi) <span class="badge">carakawi.js</span></div>
             <div class="output-group">
                 <div class="output-label">Aksara Jawa</div>
                 <div id="outCaraKawi_Aksara" class="box-aksara font-ngayogyann">-</div>
@@ -170,8 +170,6 @@
         processTransliteration();
     }
 
-    // Fungsi canggih untuk mengubah string JGST menjadi IPA
-    // IPA diturunkan langsung dari kode JGST sehingga hasil IPA menyesuaikan masing-masing tata tulis.
     function convertJGSTtoIPA(jgstStr) {
         if (!jgstStr || jgstStr === '-') return '-';
         let str = jgstStr.toLowerCase();
@@ -193,10 +191,45 @@
                 ipaResult += char;
             }
         }
-        
-        // Membersihkan jika ada spasi berlebih
-        ipaResult = ipaResult.replace(/\s+/g, ' ').trim();
         return ipaResult ? `[ ${ipaResult} ]` : '-';
+    }
+
+    // Fungsi pemrosesan berbasis kata agar spasi pada input Latin user selalu dipertahankan
+    function processWordByWord(inputLatin, transliterateFn) {
+        if (!inputLatin) return { aksara: '-', jgst: '-', ipa: '-' };
+
+        // Memecah input Latin berdasarkan spasi dan newline, sambil mempertahankan karakternya
+        const tokens = inputLatin.split(/(\s+)/);
+        
+        let aksaraList = [];
+        let jgstList = [];
+        let ipaList = [];
+
+        tokens.forEach(token => {
+            if (/^\s+$/.test(token)) {
+                // Pertahankan spasi/newline asli dari input user
+                aksaraList.push(token);
+                jgstList.push(token);
+                ipaList.push(token);
+            } else if (token !== '') {
+                const aksaraWord = transliterateFn(token);
+                let jgstWord = '-';
+                if (typeof transliterateToJGST === 'function') {
+                    jgstWord = transliterateToJGST(aksaraWord);
+                }
+                const ipaWord = convertJGSTtoIPA(jgstWord);
+
+                aksaraList.push(aksaraWord);
+                jgstList.push(jgstWord);
+                ipaList.push(ipaWord);
+            }
+        });
+
+        return {
+            aksara: aksaraList.join(''),
+            jgst: jgstList.join(''),
+            ipa: ipaList.join('')
+        };
     }
 
     function processCardOutput(moduleId, fnKey, input) {
@@ -209,19 +242,11 @@
             return;
         }
 
-        // 1. Dapatkan Aksara
-        const resAksara = Modules[fnKey](input);
-        outAksara.textContent = resAksara;
+        const result = processWordByWord(input, Modules[fnKey]);
 
-        // 2. Dapatkan JGST dari Aksara tersebut
-        let resJGST = '-';
-        if (typeof transliterateToJGST === 'function') {
-            resJGST = transliterateToJGST(resAksara);
-        }
-        outJGST.textContent = resJGST;
-
-        // 3. Dapatkan IPA dari JGST tersebut
-        outIPA.textContent = convertJGSTtoIPA(resJGST);
+        outAksara.textContent = result.aksara;
+        outJGST.textContent = result.jgst;
+        outIPA.textContent = result.ipa;
     }
 
     function processTransliteration() {
