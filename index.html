@@ -67,7 +67,7 @@
     <div class="input-section">
         <label style="font-weight: bold; display: block; margin-bottom: 8px;">Huruf Latin</label>
         <textarea id="inputLatin" 
-                  placeholder="Ketik teks di sini... (contoh: kriya, lelema, reksa, botol, tape)" 
+                  placeholder="Ketik teks di sini..." 
                   autocapitalize="none" 
                   autocomplete="off" 
                   autocorrect="off" 
@@ -277,7 +277,7 @@
 
 
     // ==========================================
-    // LOGIKA UI & KONVERSI IPA KATA MURNI
+    // LOGIKA UI & KONVERSI IPA (H, W, Y DILAPISKAN)
     // ==========================================
     const Modules = { kbj: null, sriwedari: null, simplified: null, tradisional: null, carakawi: null };
 
@@ -325,12 +325,11 @@
                     str = str.replace(/a/g, 'ɔ');
                 }
             } else {
-                // Konversi i miring menjadi ɪ dan u miring menjadi ʊ
                 str = str.replace(new RegExp(`([${vowels}])([^${vowels}]*)$`), function(match, vowel, cons) {
-                    if (vowel === 'i') return 'ɪ' + cons; // i miring -> ɪ
-                    if (vowel === 'u') return 'ʊ' + cons; // u miring -> ʊ
-                    if (vowel === 'é' || vowel === 'è' || vowel === 'e') return 'ɛ' + cons; // e miring -> ɛ
-                    if (vowel === 'o') return 'ɔ' + cons; // o miring -> ɔ
+                    if (vowel === 'i') return 'ɪ' + cons; 
+                    if (vowel === 'u') return 'ʊ' + cons; 
+                    if (vowel === 'é' || vowel === 'è' || vowel === 'e') return 'ɛ' + cons; 
+                    if (vowel === 'o') return 'ɔ' + cons; 
                     return vowel + cons;
                 });
                 
@@ -340,6 +339,19 @@
 
             str = str.replace(/[éè]/g, 'e'); 
             str = str.replace(/ě/g, 'ə'); 
+
+            // Aturan khusus H, W, Y (Tebal & Tipis)
+            // 1. Ha Tipis di awal kata (posisi lepas) -> lebur / dihilangkan
+            str = str.replace(/^h([ɔaɪʊɛeəiuanoːaɪaʊ])/i, '$1');
+            
+            // 2. Ha Tebal (pada posisi medial / akhir kata / wignyan) -> [h]
+            str = str.replace(/ḥ/g, 'h');
+
+            // 3. Wa Tebal & Wa Tipis: Wa diawali konsonan / medial -> w̤ (tebal), di posisi biasa -> w
+            str = str.replace(/([bcdfghjklmnpqrstvwxyzḥŋṙṃñṅṇṭḍc jśṣqxfvz])w/g, '$1w̤');
+            
+            // 4. Ya Tebal & Ya Tipis: Ya diawali konsonan / medial -> j̤ (tebal), di posisi biasa -> j
+            str = str.replace(/([bcdfghjklmnpqrstvwxyzḥŋṙṃñṅṇṭḍc jśṣqxfvz])y/g, '$1j̤');
 
             const ipaMap = {
                 'ā': 'aː', 'ī': 'iː', 'ū': 'uː',
