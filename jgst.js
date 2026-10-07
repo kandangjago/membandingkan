@@ -1,6 +1,6 @@
 /**
- * jgst.js (Diperbarui dengan Vokal Inheren /a/ dan Penanganan Spasi Definitif)
- * Pemetaan Aksara Jawa ke Latin JGST.
+ * jgst.js
+ * Transliterasi Aksara Jawa Unicode ke JGST
  */
 
 const jgstMap = {
@@ -31,25 +31,26 @@ const sandhanganMap = {
   '\uA9B4': 'ā', '\uA9B5': 'o', '\uA9B6': 'i', '\uA9B7': 'ī', '\uA9B8': 'u',
   '\uA9B9': 'ū', '\uA9BA\uA9B4': 'o', '\uA9BA\uA9B5': 'õ', '\uA9BA': 'é', '\uA9BB\uA9B4': 'ꜹ',
   '\uA9BB\uA9B5': 'ã', '\uA9BB': 'ꜽ', '\uA9BC\uA9B4': 'ö', '\uA9BC': 'ě', '\uA9BD': 'ṛě',
-  '\uA9BE': 'ya', '\uA9BF': 'ra', '\uA9C0': '/' // Pangkon
+  '\uA9BE': 'ya', '\uA9BF': 'ra', '\uA9C0': '/'
 };
 
 function transliterateToJGST(text) {
+  if (!text) return "";
   let result = "";
   let i = 0;
 
   while (i < text.length) {
     let char1 = text[i];
     
-    // 1. Tangani Spasi, Ganti Baris, dan Pemisah secara eksplisit
-    if (char1 === ' ' || char1 === '\n' || char1 === '\t') {
-        result += char1;
-        i++;
-        continue;
-    }
-    
-    // 2. Abaikan Zero Width Joiner/Non-Joiner
+    // Lewati kontrol zero-width
     if (char1 === '\u200C' || char1 === '\u200D') {
+      i++;
+      continue;
+    }
+
+    // Tangani karakter khusus non-aksara (spasi, simbol, angka latin)
+    if (!/[\uA980-\uA9DF]/.test(char1)) {
+      result += char1;
       i++;
       continue;
     }
