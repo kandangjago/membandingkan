@@ -170,6 +170,7 @@
         processTransliteration();
     }
 
+    // Konversi JGST ke IPA tanpa tanda kurung siku []
     function convertJGSTtoIPA(jgstStr) {
         if (!jgstStr || jgstStr === '-') return '-';
         let str = jgstStr.toLowerCase();
@@ -191,45 +192,7 @@
                 ipaResult += char;
             }
         }
-        return ipaResult ? `[ ${ipaResult} ]` : '-';
-    }
-
-    // Fungsi pemrosesan berbasis kata agar spasi pada input Latin user selalu dipertahankan
-    function processWordByWord(inputLatin, transliterateFn) {
-        if (!inputLatin) return { aksara: '-', jgst: '-', ipa: '-' };
-
-        // Memecah input Latin berdasarkan spasi dan newline, sambil mempertahankan karakternya
-        const tokens = inputLatin.split(/(\s+)/);
-        
-        let aksaraList = [];
-        let jgstList = [];
-        let ipaList = [];
-
-        tokens.forEach(token => {
-            if (/^\s+$/.test(token)) {
-                // Pertahankan spasi/newline asli dari input user
-                aksaraList.push(token);
-                jgstList.push(token);
-                ipaList.push(token);
-            } else if (token !== '') {
-                const aksaraWord = transliterateFn(token);
-                let jgstWord = '-';
-                if (typeof transliterateToJGST === 'function') {
-                    jgstWord = transliterateToJGST(aksaraWord);
-                }
-                const ipaWord = convertJGSTtoIPA(jgstWord);
-
-                aksaraList.push(aksaraWord);
-                jgstList.push(jgstWord);
-                ipaList.push(ipaWord);
-            }
-        });
-
-        return {
-            aksara: aksaraList.join(''),
-            jgst: jgstList.join(''),
-            ipa: ipaList.join('')
-        };
+        return ipaResult.trim() || '-';
     }
 
     function processCardOutput(moduleId, fnKey, input) {
@@ -242,11 +205,36 @@
             return;
         }
 
-        const result = processWordByWord(input, Modules[fnKey]);
+        // 1. Pemrosesan Aksara Jawa secara utuh (Scripto Continua dipertahankan)
+        const aksaraUtuh = Modules[fnKey](input);
+        outAksara.textContent = aksaraUtuh;
 
-        outAksara.textContent = result.aksara;
-        outJGST.textContent = result.jgst;
-        outIPA.textContent = result.ipa;
+        // 2. Pemrosesan JGST & IPA berbasis spasi dari input Latin user
+        const tokens = input.split(/(\s+)/);
+        let jgstList = [];
+        let ipaList = [];
+
+        tokens.forEach(token => {
+            if (/^\s+$/.test(token)) {
+                // Meneruskan spasi/newline asli input Latin user
+                jgstList.push(token);
+                ipaList.push(token);
+            } else if (token !== '') {
+                // Transliterasi per kata khusus untuk memperoleh JGST & IPA ber-spasi
+                const aksaraKata = Modules[fnKey](token);
+                let jgstKata = '-';
+                if (typeof transliterateToJGST === 'function') {
+                    jgstKata = transliterateToJGST(aksaraKata);
+                }
+                const ipaKata = convertJGSTtoIPA(jgstKata);
+
+                jgstList.push(jgstKata);
+                ipaList.push(ipaKata);
+            }
+        });
+
+        outJGST.textContent = jgstList.join('');
+        outIPA.textContent = ipaList.join('');
     }
 
     function processTransliteration() {
