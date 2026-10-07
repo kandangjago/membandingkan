@@ -52,7 +52,7 @@
         
         .box-aksara { min-height: 40px; font-size: 1.8rem; line-height: 1.6; color: #0f172a; word-wrap: break-word; white-space: pre-wrap;}
         
-        /* Menggunakan Font Gentium Plus untuk JGST dan IPA */
+        /* Font Gentium Plus untuk JGST dan IPA */
         .box-jgst { font-family: 'Gentium Plus', serif; font-size: 1.25rem; color: #b91c1c; font-weight: bold; word-wrap: break-word; white-space: pre-wrap;}
         .box-ipa { font-family: 'Gentium Plus', serif; font-size: 1.25rem; color: #047857; word-wrap: break-word; white-space: pre-wrap;}
 
@@ -67,7 +67,6 @@
 
     <div class="input-section">
         <label style="font-weight: bold; display: block; margin-bottom: 8px;">Huruf Latin</label>
-        <!-- Non-aktifkan Kapitalisasi Otomatis -->
         <textarea id="inputLatin" 
                   placeholder="Ketik teks di sini..." 
                   autocapitalize="off" 
@@ -150,7 +149,6 @@
             <div class="card-header">5. Cara Kawi (Mardi Kawi) <span class="badge">carakawi.js</span></div>
             <div class="output-group">
                 <div class="output-label">Aksara Jawa</div>
-                <!-- Menggunakan Font ngayogyan.ttf -->
                 <div id="outCaraKawi_Aksara" class="box-aksara font-ngayogyan">-</div>
             </div>
             <div class="output-group">
@@ -194,7 +192,7 @@
         processTransliteration();
     }
 
-    // Fungsi Pembentukan Fonem IPA Berdasarkan Aturan Fonologi Jawa
+    // Fungsi Pembentukan Fonem IPA yang Disempurnakan
     function convertJGSTtoIPA(jgstStr) {
         if (!jgstStr || jgstStr === '-') return '-';
         
@@ -205,30 +203,29 @@
             
             let str = word;
 
-            // 1. Cek Suku Kata Terakhir
+            // 1. Cek Suku Kata Terakhir (Tutup vs Buka)
             let isClosedSyllable = /[bcdfghjklmnpqrstvwxyzḥŋṙṃñṅṇṭḍc jśṣqxfvz/]$/i.test(str.replace(/\/$/, ''));
             if (str.endsWith('/')) {
                 isClosedSyllable = true;
             }
 
-            // 2. Terapkan Aturan VokalIPA
+            // 2. Vokal Terbuka vs Suku Kata Tertutup
             if (!isClosedSyllable) {
-                // Jika vokal terbuka di akhir kata: Semua 'a' menjadi 'ɔ' (seperti 'o' pada botol)
+                // Suku kata terbuka tanpa sandhangan: a -> ɔ (seperti o pada botol)
                 str = str.replace(/a/g, 'ɔ');
             } else {
-                // Suku kata tertutup
-                // a -> a (bata / a miring) - dipertahankan sebagai 'a'
-                // i -> e (tape / i miring)
-                // u -> o (toko / u miring)
+                // Suku kata tertutup:
+                // i miring -> e (seperti e pada tape)
+                // u miring -> o (seperti o pada toko)
                 str = str.replace(/i(?=[^aeiouɔɛ]*$)/g, 'e');
                 str = str.replace(/u(?=[^aeiouɔɛ]*$)/g, 'o');
             }
 
-            // 3. Sandhangan Taling (é/è/e) -> ɛ (karet / e miring)
+            // 3. Sandhangan Taling (é/è/e) -> ɛ (e miring, seperti pada karet)
             str = str.replace(/[éèěe]/g, 'ɛ');
 
-            // 4. Sandhangan Taling Tarung (o) -> ɔ (botol / o miring)
-            str = str.replace(/o/g, 'ɔ');
+            // 4. Sandhangan Taling Tarung (o jejeg / o miring) -> o
+            str = str.replace(/o/g, 'o');
 
             // 5. Pemetaan Fonem Konsonan Aksara Jawa ke IPA
             const ipaMap = {
@@ -251,22 +248,28 @@
         return ipaWords.join('').trim() || '-';
     }
 
-    function processCardOutput(moduleId, fnKey, input, isSastraLampah = false) {
+    function processCardOutput(moduleId, fnKey, rawInput, isSastraLampah = false) {
         const outAksara = document.getElementById(`out${moduleId}_Aksara`);
         const outJGST = document.getElementById(`out${moduleId}_JGST`);
         const outIPA = document.getElementById(`out${moduleId}_IPA`);
 
-        if (!input.trim() || !Modules[fnKey]) {
+        if (!rawInput.trim() || !Modules[fnKey]) {
             outAksara.textContent = '-'; outJGST.textContent = '-'; outIPA.textContent = '-';
             return;
         }
 
+        // Standardisasi e' / E' menjadi é / É untuk Tradisional & Cara Kawi
+        let formattedInput = rawInput;
+        if (moduleId === 'Tradisional' || moduleId === 'CaraKawi') {
+            formattedInput = rawInput.replace(/e'/g, 'é').replace(/E'/g, 'É');
+        }
+
         // 1. Aksara Jawa Utuh (Scripto Continua)
-        const aksaraUtuh = Modules[fnKey](input);
+        const aksaraUtuh = Modules[fnKey](formattedInput);
         outAksara.textContent = aksaraUtuh;
 
         // 2. JGST & IPA Ber-spasi Berdasarkan Input User
-        const tokens = input.split(/(\s+)/);
+        const tokens = formattedInput.split(/(\s+)/);
         let jgstList = [];
         let ipaList = [];
 
@@ -303,7 +306,6 @@
         processCardOutput('KBJ', 'kbj', input, false);
         processCardOutput('Sriwedari', 'sriwedari', input, false);
         processCardOutput('Simplified', 'simplified', input, false);
-        // Tradisional & Cara Kawi diaktifkan penanganan Sastra Lampah (tanpa 'h' awal)
         processCardOutput('Tradisional', 'tradisional', input, true);
         processCardOutput('CaraKawi', 'carakawi', input, true);
     }
