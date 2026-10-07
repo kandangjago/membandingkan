@@ -162,123 +162,11 @@
     </div>
 </div>
 
+<!-- PEMANGGILAN MODUL EXTERNAL -->
+<script src="jgst.js"></script>
+<script src="ipa.js"></script>
+
 <script>
-    // ==========================================
-    // LOGIKA INTERNAL JGST
-    // ==========================================
-    const jgstMap = {
-      '\uA980': 'ṃ', '\uA981': 'ŋ', '\uA982': 'ṙ', '\uA983': 'ḥ',
-      '\uA984\uA9B4': 'ā', '\uA984': 'a', '\uA985': 'i', '\uA986': 'i', '\uA987': 'ī',
-      '\uA988\uA9B4': 'ū', '\uA988': 'u', '\uA989\uA9B4': 'ṛě', '\uA989': 'ṛ',
-      '\uA98A': 'ḷ', '\uA98B': 'ḷö', '\uA98C': 'é', '\uA98D': 'ꜽ', '\uA98E\uA9B4': 'ꜷ', '\uA98E': 'o',
-      '\uA98F': 'ka', '\uA990': 'qa', '\uA991': 'ḳa', '\uA992': 'ga', '\uA993': 'g̣a',
-      '\uA994': 'ṅa', '\uA995': 'ca', '\uA996': 'c̣a', '\uA997': 'ja', '\uA998': 'jña',
-      '\uA999': 'j̣a', '\uA99A': 'ña', '\uA99B': 'ṭa', '\uA99C': 'ṭha', '\uA99D': 'ḍa',
-      '\uA99E': 'ḍha', '\uA99F': 'ṇa', '\uA9A0': 'ta', '\uA9A1': 'tha', '\uA9A2': 'da',
-      '\uA9A3': 'dha', '\uA9A4': 'na', '\uA9A5': 'pa', '\uA9A6': 'p̣a', '\uA9A7': 'ba',
-      '\uA9A8': 'ḅa', '\uA9A9': 'ma', '\uA9AA': 'ya', '\uA9AB\uA9C0': 'r', '\uA9AB': 'ra',
-      '\uA9AC': 'ṟa', '\uA9AD': 'la', '\uA9AE': 'wa', '\uA9AF': 'śa', '\uA9B0': 'ṣa',
-      '\uA9B1': 'sa', '\uA9B2': 'ha', '\uA9B3': '', '\uA9C8': ',', '\uA9C9': '.',
-      '\uA9D0': '0', '\uA9D1': '1', '\uA9D2': '2', '\uA9D3': '3', '\uA9D4': '4',
-      '\uA9D5': '5', '\uA9D6': '6', '\uA9D7': '7', '\uA9D8': '8', '\uA9D9': '9'
-    };
-
-    const rekanMap = {
-      '\uA9A5\uA9B3': 'fa', '\uA9AE\uA9B3': 'va', '\uA997\uA9B3': 'za', '\uA9A2\uA9B3': 'dza',
-      '\uA9B2\uA9B3': 'ḥa', '\uA994\uA9B3': '‘a', '\uA9B1\uA9B3': 'ṡa', '\uA9B0\uA9B3': 'ṣa',
-      '\uA9AF\uA9B3': 'śa', '\uA9AD\uA9B3': 'ḍa', '\uA9A1\uA9B3': 'ṭa', '\uA9A3\uA9B3': 'ẓa',
-      '\uA98F\uA9B3': 'xa', '\uA990\uA9B3': 'xa'
-    };
-
-    const sandhanganMap = {
-      '\uA9B4': 'ā', '\uA9B5': 'o', '\uA9B6': 'i', '\uA9B7': 'ī', '\uA9B8': 'u',
-      '\uA9B9': 'ū', '\uA9BA\uA9B4': 'o', '\uA9BA\uA9B5': 'õ', '\uA9BA': 'é', '\uA9BB\uA9B4': 'ꜹ',
-      '\uA9BB\uA9B5': 'ã', '\uA9BB': 'ꜽ', '\uA9BC\uA9B4': 'ö', '\uA9BC': 'ě', '\uA9BD': 'ṛě',
-      '\uA9BE': 'ya', '\uA9BF': 'ra', '\uA9C0': '/'
-    };
-
-    function transliterateToJGST(text) {
-        if (!text) return "";
-        let result = "";
-        let i = 0;
-
-        while (i < text.length) {
-            let char1 = text[i];
-            
-            if (char1 === '\u200C' || char1 === '\u200D') {
-                i++;
-                continue;
-            }
-
-            if (!/[\uA980-\uA9DF]/.test(char1)) {
-                result += char1;
-                i++;
-                continue;
-            }
-
-            let char2 = i + 1 < text.length ? text.substring(i, i + 2) : "";
-            let baseText = "";
-            let matchedLen = 0;
-
-            if (rekanMap[char2] !== undefined) {
-                baseText = rekanMap[char2];
-                matchedLen = 2;
-            } else if (jgstMap[char2] !== undefined) {
-                baseText = jgstMap[char2];
-                matchedLen = 2;
-            } else if (jgstMap[char1] !== undefined) {
-                baseText = jgstMap[char1];
-                matchedLen = 1;
-            }
-
-            if (matchedLen > 0) {
-                i += matchedLen;
-                
-                while (i < text.length) {
-                    let next2 = i + 1 < text.length ? text.substring(i, i + 2) : "";
-                    let next1 = text[i];
-                    let consumed = 0;
-
-                    if (sandhanganMap[next2] !== undefined) {
-                        let sandh = sandhanganMap[next2];
-                        if (sandh === '/') {
-                            baseText = baseText.endsWith('a') ? baseText.slice(0, -1) : baseText;
-                        } else {
-                            if (baseText.endsWith('a')) baseText = baseText.slice(0, -1);
-                            baseText += sandh;
-                        }
-                        consumed = 2;
-                    } else if (sandhanganMap[next1] !== undefined) {
-                        let sandh = sandhanganMap[next1];
-                        if (sandh === '/') {
-                            baseText = baseText.endsWith('a') ? baseText.slice(0, -1) : baseText;
-                        } else {
-                            if (baseText.endsWith('a')) baseText = baseText.slice(0, -1);
-                            baseText += sandh;
-                        }
-                        consumed = 1;
-                    }
-
-                    if (consumed > 0) {
-                        i += consumed;
-                    } else {
-                        break;
-                    }
-                }
-                
-                result += baseText;
-            } else {
-                result += char1;
-                i++;
-            }
-        }
-        return result;
-    }
-
-
-    // ==========================================
-    // LOGIKA UI & KONVERSI IPA (H, W, Y DILAPISKAN)
-    // ==========================================
     const Modules = { kbj: null, sriwedari: null, simplified: null, tradisional: null, carakawi: null };
 
     async function loadScriptAsModule(url, fnName) {
@@ -305,77 +193,6 @@
         processTransliteration();
     }
 
-    // Fungsi Konversi Fonem IPA Terisolasi PER KATA
-    function convertJGSTtoIPA(jgstStr) {
-        if (!jgstStr || jgstStr === '-') return '-';
-        
-        let words = jgstStr.split(/(\s+)/);
-        
-        let ipaWords = words.map(word => {
-            if (/^\s+$/.test(word)) return word;
-            
-            let str = word.toLowerCase().replace(/\/$/, '');
-            const vowels = 'aāiīuūěéèeoꜽꜷṛḷ';
-
-            let lastChar = str.slice(-1);
-            let isVowelEnd = /[aāiīuūěéèeoꜽꜷ]/.test(lastChar);
-
-            if (isVowelEnd) {
-                if (lastChar === 'a') {
-                    str = str.replace(/a/g, 'ɔ');
-                }
-            } else {
-                str = str.replace(new RegExp(`([${vowels}])([^${vowels}]*)$`), function(match, vowel, cons) {
-                    if (vowel === 'i') return 'ɪ' + cons; 
-                    if (vowel === 'u') return 'ʊ' + cons; 
-                    if (vowel === 'é' || vowel === 'è' || vowel === 'e') return 'ɛ' + cons; 
-                    if (vowel === 'o') return 'ɔ' + cons; 
-                    return vowel + cons;
-                });
-                
-                if (/ɔ[^aeiouɔɛɪʊ]*$/.test(str)) str = str.replace(/o/g, 'ɔ');
-                if (/ɛ[^aeiouɔɛɪʊ]*$/.test(str)) str = str.replace(/[éèe]/g, 'ɛ');
-            }
-
-            str = str.replace(/[éè]/g, 'e'); 
-            str = str.replace(/ě/g, 'ə'); 
-
-            // Aturan khusus H, W, Y (Tebal & Tipis)
-            // 1. Ha Tipis di awal kata (posisi lepas) -> lebur / dihilangkan
-            str = str.replace(/^h([ɔaɪʊɛeəiuanoːaɪaʊ])/i, '$1');
-            
-            // 2. Ha Tebal (pada posisi medial / akhir kata / wignyan) -> [h]
-            str = str.replace(/ḥ/g, 'h');
-
-            // 3. Wa Tebal & Wa Tipis: Wa diawali konsonan / medial -> w̤ (tebal), di posisi biasa -> w
-            str = str.replace(/([bcdfghjklmnpqrstvwxyzḥŋṙṃñṅṇṭḍc jśṣqxfvz])w/g, '$1w̤');
-            
-            // 4. Ya Tebal & Ya Tipis: Ya diawali konsonan / medial -> j̤ (tebal), di posisi biasa -> j
-            str = str.replace(/([bcdfghjklmnpqrstvwxyzḥŋṙṃñṅṇṭḍc jśṣqxfvz])y/g, '$1j̤');
-
-            const ipaMap = {
-                'ā': 'aː', 'ī': 'iː', 'ū': 'uː',
-                'ñ': 'ɲ', 'ṅ': 'ŋ', 'ṇ': 'ɳ',
-                'ṭ': 'ʈ', 'ḍ': 'ɖ', 'c': 'tʃ', 'j': 'dʒ',
-                'y': 'j', 'ś': 'ʃ', 'ṣ': 'ʂ', 'ḥ': 'h',
-                'q': 'q', 'x': 'x', 'f': 'f', 'v': 'v', 'z': 'z',
-                'ṃ': 'm', 'ṙ': 'r',
-                'ṛ': 'rə', 'ḷ': 'lə',
-                'ꜽ': 'aɪ', 'ꜷ': 'aʊ'
-            };
-
-            let res = '';
-            for (let i = 0; i < str.length; i++) {
-                let char = str[i];
-                res += (ipaMap[char] !== undefined) ? ipaMap[char] : char;
-            }
-
-            return res;
-        });
-
-        return ipaWords.join('').trim() || '-';
-    }
-
     function processCardOutput(moduleId, fnKey, rawInput, isSastraLampah = false) {
         const outAksara = document.getElementById(`out${moduleId}_Aksara`);
         const outJGST = document.getElementById(`out${moduleId}_JGST`);
@@ -391,9 +208,11 @@
             formattedInput = rawInput.replace(/e'/g, 'é').replace(/E'/g, 'É');
         }
 
+        // 1. Aksara Jawa Scripto Continua
         const aksaraUtuh = Modules[fnKey](formattedInput);
         outAksara.textContent = aksaraUtuh;
 
+        // 2. JGST & IPA Pemrosesan Kata Ber-Spasi
         const tokens = formattedInput.split(/(\s+)/);
         let jgstList = [];
         let ipaList = [];
@@ -413,7 +232,11 @@
                     jgstKata = jgstKata.substring(1);
                 }
 
-                const ipaKata = convertJGSTtoIPA(jgstKata);
+                // Memanggil fungsi dari modul eksternal ipa.js
+                let ipaKata = '-';
+                if (typeof convertJGSTtoIPA === 'function') {
+                    ipaKata = convertJGSTtoIPA(jgstKata, token);
+                }
 
                 jgstList.push(jgstKata);
                 ipaList.push(ipaKata);
