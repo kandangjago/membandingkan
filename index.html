@@ -27,10 +27,13 @@
         h1 { font-size: 1.8rem; color: var(--primary); border-bottom: 3px solid var(--primary); padding-bottom: 10px; margin-bottom: 20px; }
 
         .input-section { background: var(--card-bg); padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); margin-bottom: 25px; }
+        
+        /* Container Input dengan Tombol Clear (X) */
+        .textarea-wrapper { position: relative; width: 100%; margin-bottom: 15px; }
         textarea { 
             width: 100%; 
-            height: 80px; 
-            padding: 12px; 
+            height: 90px; 
+            padding: 12px 40px 12px 12px; 
             font-size: 1.1rem; 
             border: 1px solid #cbd5e1; 
             border-radius: 6px; 
@@ -39,11 +42,45 @@
         }
         textarea:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(0, 86, 179, 0.2); }
 
+        .btn-clear {
+            position: absolute;
+            right: 12px;
+            top: 12px;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: #e2e8f0;
+            border: none;
+            color: #475569;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+            transition: all 0.2s ease;
+        }
+        .btn-clear:hover { background: #cbd5e1; color: #0f172a; }
+
+        /* Controls Section (Sliders) */
+        .controls-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            background: #f8fafc;
+            padding: 12px 16px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+        }
+        .control-group { display: flex; flex-direction: column; gap: 5px; }
+        .control-group label { font-size: 0.85rem; font-weight: 600; color: #475569; display: flex; justify-content: space-between; }
+        .control-group input[type="range"] { width: 100%; cursor: pointer; }
+
         .grid-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 20px; }
         
         .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-        .card-header { background: #f8fafc; font-size: 1.1rem; font-weight: bold; color: #1e293b; padding: 12px 16px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
-        .badge { font-size: 0.75rem; background: #e2e8f0; color: #475569; padding: 3px 8px; border-radius: 4px; font-weight: normal; }
+        .card-header { background: #f8fafc; font-size: 1.1rem; font-weight: bold; color: #1e293b; padding: 12px 16px; border-bottom: 1px solid var(--border); }
 
         .output-group { padding: 12px 16px; border-bottom: 1px dashed var(--border); }
         .output-group:last-child { border-bottom: none; }
@@ -66,18 +103,35 @@
 
     <div class="input-section">
         <label style="font-weight: bold; display: block; margin-bottom: 8px;">Huruf Latin</label>
-        <textarea id="inputLatin" 
-                  placeholder="Ketik teks di sini..." 
-                  autocapitalize="none" 
-                  autocomplete="off" 
-                  autocorrect="off" 
-                  spellcheck="false"></textarea>
+        
+        <!-- Textarea Wrapper dengan Tombol X -->
+        <div class="textarea-wrapper">
+            <textarea id="inputLatin" 
+                      placeholder="Ketik teks di sini..." 
+                      autocapitalize="none" 
+                      autocomplete="off" 
+                      autocorrect="off" 
+                      spellcheck="false"></textarea>
+            <button id="btnClear" class="btn-clear" title="Hapus teks">&times;</button>
+        </div>
+
+        <!-- Slider Pengatur Ukuran & Spasi Vertikal -->
+        <div class="controls-grid">
+            <div class="control-group">
+                <label for="sliderFontSize">Ukuran Aksara Jawa: <span id="valFontSize">1.8rem</span></label>
+                <input type="range" id="sliderFontSize" min="1" max="4" step="0.1" value="1.8">
+            </div>
+            <div class="control-group">
+                <label for="sliderLineHeight">Jarak Spasi Vertikal: <span id="valLineHeight">1.6</span></label>
+                <input type="range" id="sliderLineHeight" min="1" max="3" step="0.1" value="1.6">
+            </div>
+        </div>
     </div>
 
     <div class="grid-container">
         <!-- 1. KBJ -->
         <div class="card">
-            <div class="card-header">1. KBJ <span class="badge">kbj.js</span></div>
+            <div class="card-header">1. KBJ</div>
             <div class="output-group">
                 <div class="output-label">Aksara Jawa</div>
                 <div id="outKBJ_Aksara" class="box-aksara font-ngayogyann">-</div>
@@ -87,14 +141,14 @@
                 <div id="outKBJ_JGST" class="box-jgst">-</div>
             </div>
             <div class="output-group">
-                <div class="output-label">IPA (Pelafalan)</div>
+                <div class="output-label">IPA</div>
                 <div id="outKBJ_IPA" class="box-ipa">-</div>
             </div>
         </div>
 
         <!-- 2. Sriwedari -->
         <div class="card">
-            <div class="card-header">2. Sriwedari <span class="badge">sriwedari.js</span></div>
+            <div class="card-header">2. Sriwedari</div>
             <div class="output-group">
                 <div class="output-label">Aksara Jawa</div>
                 <div id="outSriwedari_Aksara" class="box-aksara font-ngayogyann">-</div>
@@ -104,14 +158,14 @@
                 <div id="outSriwedari_JGST" class="box-jgst">-</div>
             </div>
             <div class="output-group">
-                <div class="output-label">IPA (Pelafalan)</div>
+                <div class="output-label">IPA</div>
                 <div id="outSriwedari_IPA" class="box-ipa">-</div>
             </div>
         </div>
 
         <!-- 3. KAJ Simplified -->
         <div class="card">
-            <div class="card-header">3. KAJ Simplified <span class="badge">simplified.js</span></div>
+            <div class="card-header">3. KAJ Simplified</div>
             <div class="output-group">
                 <div class="output-label">Aksara Jawa</div>
                 <div id="outSimplified_Aksara" class="box-aksara font-ngayogyann">-</div>
@@ -121,14 +175,14 @@
                 <div id="outSimplified_JGST" class="box-jgst">-</div>
             </div>
             <div class="output-group">
-                <div class="output-label">IPA (Pelafalan)</div>
+                <div class="output-label">IPA</div>
                 <div id="outSimplified_IPA" class="box-ipa">-</div>
             </div>
         </div>
 
         <!-- 4. KAJ Tradisional -->
         <div class="card">
-            <div class="card-header">4. KAJ Tradisional <span class="badge">tradisional.js</span></div>
+            <div class="card-header">4. KAJ Tradisional</div>
             <div class="output-group">
                 <div class="output-label">Aksara Jawa</div>
                 <div id="outTradisional_Aksara" class="box-aksara font-ngayogyan">-</div>
@@ -138,14 +192,14 @@
                 <div id="outTradisional_JGST" class="box-jgst">-</div>
             </div>
             <div class="output-group">
-                <div class="output-label">IPA (Pelafalan)</div>
+                <div class="output-label">IPA</div>
                 <div id="outTradisional_IPA" class="box-ipa">-</div>
             </div>
         </div>
 
         <!-- 5. Cara Kawi -->
         <div class="card">
-            <div class="card-header">5. Cara Kawi (Mardi Kawi) <span class="badge">carakawi.js</span></div>
+            <div class="card-header">5. Cara Kawi (Mardi Kawi)</div>
             <div class="output-group">
                 <div class="output-label">Aksara Jawa</div>
                 <div id="outCaraKawi_Aksara" class="box-aksara font-ngayogyan">-</div>
@@ -155,7 +209,7 @@
                 <div id="outCaraKawi_JGST" class="box-jgst">-</div>
             </div>
             <div class="output-group">
-                <div class="output-label">IPA (Pelafalan)</div>
+                <div class="output-label">IPA</div>
                 <div id="outCaraKawi_IPA" class="box-ipa">-</div>
             </div>
         </div>
@@ -232,7 +286,6 @@
                     jgstKata = jgstKata.substring(1);
                 }
 
-                // Memanggil fungsi dari modul eksternal ipa.js
                 let ipaKata = '-';
                 if (typeof convertJGSTtoIPA === 'function') {
                     ipaKata = convertJGSTtoIPA(jgstKata, token);
@@ -250,12 +303,41 @@
     function processTransliteration() {
         const input = document.getElementById('inputLatin').value;
         
+        // Tampilkan/Sembunyikan tombol 'X' pembersih input
+        const btnClear = document.getElementById('btnClear');
+        btnClear.style.display = input.length > 0 ? 'flex' : 'none';
+
         processCardOutput('KBJ', 'kbj', input, false);
         processCardOutput('Sriwedari', 'sriwedari', input, false);
         processCardOutput('Simplified', 'simplified', input, false);
         processCardOutput('Tradisional', 'tradisional', input, true);
         processCardOutput('CaraKawi', 'carakawi', input, true);
     }
+
+    // Event Listener Tombol Hapus (X)
+    document.getElementById('btnClear').addEventListener('click', () => {
+        const inputLatin = document.getElementById('inputLatin');
+        inputLatin.value = '';
+        inputLatin.focus();
+        processTransliteration();
+    });
+
+    // Event Listener Slider Ukuran Font & Spasi Vertikal
+    document.getElementById('sliderFontSize').addEventListener('input', (e) => {
+        const val = e.target.value;
+        document.getElementById('valFontSize').textContent = `${val}rem`;
+        document.querySelectorAll('.box-aksara').forEach(el => {
+            el.style.fontSize = `${val}rem`;
+        });
+    });
+
+    document.getElementById('sliderLineHeight').addEventListener('input', (e) => {
+        const val = e.target.value;
+        document.getElementById('valLineHeight').textContent = val;
+        document.querySelectorAll('.box-aksara').forEach(el => {
+            el.style.lineHeight = val;
+        });
+    });
 
     document.getElementById('inputLatin').addEventListener('input', processTransliteration);
     window.addEventListener('DOMContentLoaded', initModules);
