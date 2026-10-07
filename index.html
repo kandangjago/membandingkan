@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Membandingkan Tata Tulis Aksara Jawa</title>
+    
+    <!-- Google Font Gentium Plus -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Gentium+Plus:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+
     <style>
         @font-face { font-family: 'Ngayogyann'; src: url('ngayogyann.ttf') format('truetype'); }
         @font-face { font-family: 'Ngayogyan'; src: url('ngayogyan.ttf') format('truetype'); }
@@ -21,7 +27,16 @@
         h1 { font-size: 1.8rem; color: var(--primary); border-bottom: 3px solid var(--primary); padding-bottom: 10px; margin-bottom: 20px; }
 
         .input-section { background: var(--card-bg); padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); margin-bottom: 25px; }
-        textarea { width: 100%; height: 80px; padding: 12px; font-size: 1.1rem; border: 1px solid #cbd5e1; border-radius: 6px; resize: vertical; }
+        textarea { 
+            width: 100%; 
+            height: 80px; 
+            padding: 12px; 
+            font-size: 1.1rem; 
+            border: 1px solid #cbd5e1; 
+            border-radius: 6px; 
+            resize: vertical;
+            text-transform: none;
+        }
         textarea:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(0, 86, 179, 0.2); }
 
         .grid-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 20px; }
@@ -36,8 +51,10 @@
         .output-label { font-size: 0.8rem; color: #64748b; font-weight: bold; text-transform: uppercase; margin-bottom: 4px; }
         
         .box-aksara { min-height: 40px; font-size: 1.8rem; line-height: 1.6; color: #0f172a; word-wrap: break-word; white-space: pre-wrap;}
-        .box-jgst { font-family: 'Courier New', Courier, monospace; font-size: 1.1rem; color: #b91c1c; font-weight: bold; word-wrap: break-word; white-space: pre-wrap;}
-        .box-ipa { font-family: 'Segoe UI', sans-serif; font-size: 1.1rem; color: #047857; word-wrap: break-word; white-space: pre-wrap;}
+        
+        /* Menggunakan Font Gentium Plus untuk JGST dan IPA */
+        .box-jgst { font-family: 'Gentium Plus', serif; font-size: 1.25rem; color: #b91c1c; font-weight: bold; word-wrap: break-word; white-space: pre-wrap;}
+        .box-ipa { font-family: 'Gentium Plus', serif; font-size: 1.25rem; color: #047857; word-wrap: break-word; white-space: pre-wrap;}
 
         .font-ngayogyann { font-family: 'Ngayogyann', 'Noto Sans Javanese', sans-serif; }
         .font-ngayogyan { font-family: 'Ngayogyan', 'Noto Sans Javanese', sans-serif; }
@@ -50,7 +67,13 @@
 
     <div class="input-section">
         <label style="font-weight: bold; display: block; margin-bottom: 8px;">Huruf Latin</label>
-        <textarea id="inputLatin" placeholder="Ketik teks di sini... (contoh: mamimu memo)"></textarea>
+        <!-- Non-aktifkan Kapitalisasi Otomatis -->
+        <textarea id="inputLatin" 
+                  placeholder="Ketik teks di sini..." 
+                  autocapitalize="off" 
+                  autocomplete="off" 
+                  autocorrect="off" 
+                  spellcheck="false"></textarea>
     </div>
 
     <div class="grid-container">
@@ -127,7 +150,8 @@
             <div class="card-header">5. Cara Kawi (Mardi Kawi) <span class="badge">carakawi.js</span></div>
             <div class="output-group">
                 <div class="output-label">Aksara Jawa</div>
-                <div id="outCaraKawi_Aksara" class="box-aksara font-ngayogyann">-</div>
+                <!-- Menggunakan Font ngayogyan.ttf -->
+                <div id="outCaraKawi_Aksara" class="box-aksara font-ngayogyan">-</div>
             </div>
             <div class="output-group">
                 <div class="output-label">JGST</div>
@@ -170,32 +194,64 @@
         processTransliteration();
     }
 
-    // Konversi JGST ke IPA tanpa tanda kurung siku []
+    // Fungsi Pembentukan Fonem IPA Berdasarkan Aturan Fonologi Jawa
     function convertJGSTtoIPA(jgstStr) {
         if (!jgstStr || jgstStr === '-') return '-';
-        let str = jgstStr.toLowerCase();
         
-        const ipaMap = {
-            'ā': 'aː', 'ī': 'iː', 'ū': 'uː', 'ě': 'ə', 'é': 'e', 'o': 'o',
-            'ñ': 'ɲ', 'ṅ': 'ŋ', 'ṇ': 'ɳ',
-            'ṭ': 'ʈ', 'ḍ': 'ɖ', 'c': 'tʃ', 'j': 'dʒ',
-            'y': 'j', 'ś': 'ʃ', 'ṣ': 'ʂ', 'ḥ': 'h',
-            'q': 'q', 'x': 'x', 'f': 'f', 'v': 'v', 'z': 'z'
-        };
+        let words = jgstStr.split(/(\s+)/);
+        
+        let ipaWords = words.map(word => {
+            if (/^\s+$/.test(word)) return word;
+            
+            let str = word;
 
-        let ipaResult = '';
-        for (let i = 0; i < str.length; i++) {
-            let char = str[i];
-            if (ipaMap[char] !== undefined) {
-                ipaResult += ipaMap[char];
-            } else {
-                ipaResult += char;
+            // 1. Cek Suku Kata Terakhir
+            let isClosedSyllable = /[bcdfghjklmnpqrstvwxyzḥŋṙṃñṅṇṭḍc jśṣqxfvz/]$/i.test(str.replace(/\/$/, ''));
+            if (str.endsWith('/')) {
+                isClosedSyllable = true;
             }
-        }
-        return ipaResult.trim() || '-';
+
+            // 2. Terapkan Aturan VokalIPA
+            if (!isClosedSyllable) {
+                // Jika vokal terbuka di akhir kata: Semua 'a' menjadi 'ɔ' (seperti 'o' pada botol)
+                str = str.replace(/a/g, 'ɔ');
+            } else {
+                // Suku kata tertutup
+                // a -> a (bata / a miring) - dipertahankan sebagai 'a'
+                // i -> e (tape / i miring)
+                // u -> o (toko / u miring)
+                str = str.replace(/i(?=[^aeiouɔɛ]*$)/g, 'e');
+                str = str.replace(/u(?=[^aeiouɔɛ]*$)/g, 'o');
+            }
+
+            // 3. Sandhangan Taling (é/è/e) -> ɛ (karet / e miring)
+            str = str.replace(/[éèěe]/g, 'ɛ');
+
+            // 4. Sandhangan Taling Tarung (o) -> ɔ (botol / o miring)
+            str = str.replace(/o/g, 'ɔ');
+
+            // 5. Pemetaan Fonem Konsonan Aksara Jawa ke IPA
+            const ipaMap = {
+                'ā': 'aː', 'ī': 'iː', 'ū': 'uː',
+                'ñ': 'ɲ', 'ṅ': 'ŋ', 'ṇ': 'ɳ',
+                'ṭ': 'ʈ', 'ḍ': 'ɖ', 'c': 'tʃ', 'j': 'dʒ',
+                'y': 'j', 'ś': 'ʃ', 'ṣ': 'ʂ', 'ḥ': 'h',
+                'q': 'q', 'x': 'x', 'f': 'f', 'v': 'v', 'z': 'z'
+            };
+
+            let res = '';
+            for (let i = 0; i < str.length; i++) {
+                let char = str[i];
+                res += (ipaMap[char] !== undefined) ? ipaMap[char] : char;
+            }
+
+            return res;
+        });
+
+        return ipaWords.join('').trim() || '-';
     }
 
-    function processCardOutput(moduleId, fnKey, input) {
+    function processCardOutput(moduleId, fnKey, input, isSastraLampah = false) {
         const outAksara = document.getElementById(`out${moduleId}_Aksara`);
         const outJGST = document.getElementById(`out${moduleId}_JGST`);
         const outIPA = document.getElementById(`out${moduleId}_IPA`);
@@ -205,27 +261,31 @@
             return;
         }
 
-        // 1. Pemrosesan Aksara Jawa secara utuh (Scripto Continua dipertahankan)
+        // 1. Aksara Jawa Utuh (Scripto Continua)
         const aksaraUtuh = Modules[fnKey](input);
         outAksara.textContent = aksaraUtuh;
 
-        // 2. Pemrosesan JGST & IPA berbasis spasi dari input Latin user
+        // 2. JGST & IPA Ber-spasi Berdasarkan Input User
         const tokens = input.split(/(\s+)/);
         let jgstList = [];
         let ipaList = [];
 
         tokens.forEach(token => {
             if (/^\s+$/.test(token)) {
-                // Meneruskan spasi/newline asli input Latin user
                 jgstList.push(token);
                 ipaList.push(token);
             } else if (token !== '') {
-                // Transliterasi per kata khusus untuk memperoleh JGST & IPA ber-spasi
                 const aksaraKata = Modules[fnKey](token);
                 let jgstKata = '-';
                 if (typeof transliterateToJGST === 'function') {
                     jgstKata = transliterateToJGST(aksaraKata);
                 }
+
+                // Pengkondisian Sastra Lampah (Hilangkan 'h' diawal kata untuk Tradisional & Cara Kawi)
+                if (isSastraLampah && /^h[aeiouɔɛāīū]/i.test(jgstKata)) {
+                    jgstKata = jgstKata.substring(1);
+                }
+
                 const ipaKata = convertJGSTtoIPA(jgstKata);
 
                 jgstList.push(jgstKata);
@@ -239,11 +299,13 @@
 
     function processTransliteration() {
         const input = document.getElementById('inputLatin').value;
-        processCardOutput('KBJ', 'kbj', input);
-        processCardOutput('Sriwedari', 'sriwedari', input);
-        processCardOutput('Simplified', 'simplified', input);
-        processCardOutput('Tradisional', 'tradisional', input);
-        processCardOutput('CaraKawi', 'carakawi', input);
+        
+        processCardOutput('KBJ', 'kbj', input, false);
+        processCardOutput('Sriwedari', 'sriwedari', input, false);
+        processCardOutput('Simplified', 'simplified', input, false);
+        // Tradisional & Cara Kawi diaktifkan penanganan Sastra Lampah (tanpa 'h' awal)
+        processCardOutput('Tradisional', 'tradisional', input, true);
+        processCardOutput('CaraKawi', 'carakawi', input, true);
     }
 
     document.getElementById('inputLatin').addEventListener('input', processTransliteration);
