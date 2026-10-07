@@ -325,17 +325,17 @@
                     str = str.replace(/a/g, 'ɔ');
                 }
             } else {
-                // Konversi i miring menjadi ɪ
+                // Konversi i miring menjadi ɪ dan u miring menjadi ʊ
                 str = str.replace(new RegExp(`([${vowels}])([^${vowels}]*)$`), function(match, vowel, cons) {
-                    if (vowel === 'i') return 'ɪ' + cons; // i miring -> ɪ (tape)
-                    if (vowel === 'u') return 'o' + cons; // u miring -> o (toko)
-                    if (vowel === 'é' || vowel === 'è' || vowel === 'e') return 'ɛ' + cons; // e miring -> ɛ (karet)
-                    if (vowel === 'o') return 'ɔ' + cons; // o miring -> ɔ (botol)
+                    if (vowel === 'i') return 'ɪ' + cons; // i miring -> ɪ
+                    if (vowel === 'u') return 'ʊ' + cons; // u miring -> ʊ
+                    if (vowel === 'é' || vowel === 'è' || vowel === 'e') return 'ɛ' + cons; // e miring -> ɛ
+                    if (vowel === 'o') return 'ɔ' + cons; // o miring -> ɔ
                     return vowel + cons;
                 });
                 
-                if (/ɔ[^aeiouɔɛɪ]*$/.test(str)) str = str.replace(/o/g, 'ɔ');
-                if (/ɛ[^aeiouɔɛɪ]*$/.test(str)) str = str.replace(/[éèe]/g, 'ɛ');
+                if (/ɔ[^aeiouɔɛɪʊ]*$/.test(str)) str = str.replace(/o/g, 'ɔ');
+                if (/ɛ[^aeiouɔɛɪʊ]*$/.test(str)) str = str.replace(/[éèe]/g, 'ɛ');
             }
 
             str = str.replace(/[éè]/g, 'e'); 
