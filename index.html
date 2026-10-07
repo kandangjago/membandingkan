@@ -5,160 +5,42 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Membandingkan Tata Tulis Aksara Jawa</title>
     <style>
-        @font-face {
-            font-family: 'Ngayogyann';
-            src: url('ngayogyann.ttf') format('truetype');
-            font-weight: normal;
-            font-style: normal;
-        }
-        @font-face {
-            font-family: 'Ngayogyan';
-            src: url('ngayogyan.ttf') format('truetype');
-            font-weight: normal;
-            font-style: normal;
-        }
+        @font-face { font-family: 'Ngayogyann'; src: url('ngayogyann.ttf') format('truetype'); }
+        @font-face { font-family: 'Ngayogyan'; src: url('ngayogyan.ttf') format('truetype'); }
 
         :root {
             --primary: #0056b3;
-            --bg: #f8f9fa;
+            --bg: #f4f7f6;
             --card-bg: #ffffff;
-            --text: #333333;
             --border: #e2e8f0;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg); color: #333; padding: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        h1 { font-size: 1.8rem; color: var(--primary); border-bottom: 3px solid var(--primary); padding-bottom: 10px; margin-bottom: 20px; }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
-            padding: 20px;
-            line-height: 1.6;
-        }
+        .input-section { background: var(--card-bg); padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); margin-bottom: 25px; }
+        textarea { width: 100%; height: 80px; padding: 12px; font-size: 1.1rem; border: 1px solid #cbd5e1; border-radius: 6px; resize: vertical; }
+        textarea:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(0, 86, 179, 0.2); }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
+        .grid-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 20px; }
+        
+        .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .card-header { background: #f8fafc; font-size: 1.1rem; font-weight: bold; color: #1e293b; padding: 12px 16px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+        .badge { font-size: 0.75rem; background: #e2e8f0; color: #475569; padding: 3px 8px; border-radius: 4px; font-weight: normal; }
 
-        h1 {
-            font-size: 1.8rem;
-            color: var(--primary);
-            border-bottom: 3px solid var(--primary);
-            padding-bottom: 10px;
-            margin-bottom: 20px;
-        }
+        .output-group { padding: 12px 16px; border-bottom: 1px dashed var(--border); }
+        .output-group:last-child { border-bottom: none; }
+        
+        .output-label { font-size: 0.8rem; color: #64748b; font-weight: bold; text-transform: uppercase; margin-bottom: 4px; }
+        
+        .box-aksara { min-height: 40px; font-size: 1.8rem; line-height: 1.6; color: #0f172a; word-wrap: break-word; white-space: pre-wrap;}
+        .box-jgst { font-family: 'Courier New', Courier, monospace; font-size: 1.1rem; color: #b91c1c; font-weight: bold; word-wrap: break-word; white-space: pre-wrap;}
+        .box-ipa { font-family: 'Segoe UI', sans-serif; font-size: 1.1rem; color: #047857; word-wrap: break-word; white-space: pre-wrap;}
 
-        .input-section {
-            background: var(--card-bg);
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            margin-bottom: 25px;
-        }
-
-        label {
-            font-weight: bold;
-            display: block;
-            margin-bottom: 8px;
-            font-size: 1.1rem;
-        }
-
-        textarea {
-            width: 100%;
-            height: 100px;
-            padding: 12px;
-            font-size: 1.1rem;
-            border: 1px solid #cbd5e1;
-            border-radius: 6px;
-            resize: vertical;
-            font-family: inherit;
-        }
-
-        textarea:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(0, 86, 179, 0.2);
-        }
-
-        .grid-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 20px;
-        }
-
-        .card {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 16px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-            display: flex;
-            flex-direction: column;
-        }
-
-        .card-header {
-            font-size: 1rem;
-            font-weight: bold;
-            color: #1e293b;
-            border-bottom: 2px solid var(--border);
-            padding-bottom: 8px;
-            margin-bottom: 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .badge {
-            font-size: 0.75rem;
-            background: #e2e8f0;
-            color: #475569;
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-weight: normal;
-        }
-
-        .output-box {
-            min-height: 80px;
-            word-wrap: break-word;
-            white-space: pre-wrap;
-            font-size: 1.6rem;
-            line-height: 1.8;
-            color: #0f172a;
-        }
-
-        /* Styling Font Spesifik */
-        .font-ngayogyann {
-            font-family: 'Ngayogyann', 'Noto Sans Javanese', sans-serif;
-        }
-
-        .font-ngayogyan {
-            font-family: 'Ngayogyan', 'Noto Sans Javanese', sans-serif;
-        }
-
-        .code-output {
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 1.2rem;
-            color: #b91c1c;
-            font-weight: bold;
-        }
-
-        .ipa-output {
-            font-family: 'Segoe UI', sans-serif;
-            font-size: 1.2rem;
-            color: #047857;
-        }
-
-        .footer-info {
-            margin-top: 30px;
-            font-size: 0.85rem;
-            color: #64748b;
-            text-align: center;
-        }
+        .font-ngayogyann { font-family: 'Ngayogyann', 'Noto Sans Javanese', sans-serif; }
+        .font-ngayogyan { font-family: 'Ngayogyan', 'Noto Sans Javanese', sans-serif; }
     </style>
 </head>
 <body>
@@ -167,199 +49,191 @@
     <h1>Membandingkan Tata Tulis Aksara Jawa</h1>
 
     <div class="input-section">
-        <label for="inputLatin">Huruf Latin</label>
-        <textarea id="inputLatin" placeholder="Ketik teks Latin di sini... (contoh: wewaton, sriwedari, kawi, pasar)"></textarea>
+        <label style="font-weight: bold; display: block; margin-bottom: 8px;">Huruf Latin</label>
+        <textarea id="inputLatin" placeholder="Ketik teks di sini... (contoh: wewaton, sriwedari, kawi, pasar)"></textarea>
     </div>
 
     <div class="grid-container">
         <!-- 1. KBJ -->
         <div class="card">
-            <div class="card-header">
-                1. KBJ (kbj.js)
-                <span class="badge">ngayogyann.ttf</span>
+            <div class="card-header">1. KBJ <span class="badge">kbj.js</span></div>
+            <div class="output-group">
+                <div class="output-label">Aksara Jawa</div>
+                <div id="outKBJ_Aksara" class="box-aksara font-ngayogyann">-</div>
             </div>
-            <div id="outKBJ" class="output-box font-ngayogyann">-</div>
+            <div class="output-group">
+                <div class="output-label">JGST</div>
+                <div id="outKBJ_JGST" class="box-jgst">-</div>
+            </div>
+            <div class="output-group">
+                <div class="output-label">IPA (Pelafalan)</div>
+                <div id="outKBJ_IPA" class="box-ipa">-</div>
+            </div>
         </div>
 
         <!-- 2. Sriwedari -->
         <div class="card">
-            <div class="card-header">
-                2. Sriwedari (sriwedari.js)
-                <span class="badge">ngayogyann.ttf</span>
+            <div class="card-header">2. Sriwedari <span class="badge">sriwedari.js</span></div>
+            <div class="output-group">
+                <div class="output-label">Aksara Jawa</div>
+                <div id="outSriwedari_Aksara" class="box-aksara font-ngayogyann">-</div>
             </div>
-            <div id="outSriwedari" class="output-box font-ngayogyann">-</div>
+            <div class="output-group">
+                <div class="output-label">JGST</div>
+                <div id="outSriwedari_JGST" class="box-jgst">-</div>
+            </div>
+            <div class="output-group">
+                <div class="output-label">IPA (Pelafalan)</div>
+                <div id="outSriwedari_IPA" class="box-ipa">-</div>
+            </div>
         </div>
 
         <!-- 3. KAJ Simplified -->
         <div class="card">
-            <div class="card-header">
-                3. KAJ Simplified (simplified.js)
-                <span class="badge">ngayogyann.ttf</span>
+            <div class="card-header">3. Simplified <span class="badge">simplified.js</span></div>
+            <div class="output-group">
+                <div class="output-label">Aksara Jawa</div>
+                <div id="outSimplified_Aksara" class="box-aksara font-ngayogyann">-</div>
             </div>
-            <div id="outSimplified" class="output-box font-ngayogyann">-</div>
+            <div class="output-group">
+                <div class="output-label">JGST</div>
+                <div id="outSimplified_JGST" class="box-jgst">-</div>
+            </div>
+            <div class="output-group">
+                <div class="output-label">IPA (Pelafalan)</div>
+                <div id="outSimplified_IPA" class="box-ipa">-</div>
+            </div>
         </div>
 
         <!-- 4. KAJ Tradisional -->
         <div class="card">
-            <div class="card-header">
-                4. KAJ Tradisional (tradisional.js)
-                <span class="badge">ngayogyan.ttf</span>
+            <div class="card-header">4. Tradisional <span class="badge">tradisional.js</span></div>
+            <div class="output-group">
+                <div class="output-label">Aksara Jawa</div>
+                <div id="outTradisional_Aksara" class="box-aksara font-ngayogyan">-</div>
             </div>
-            <div id="outTradisional" class="output-box font-ngayogyan">-</div>
+            <div class="output-group">
+                <div class="output-label">JGST</div>
+                <div id="outTradisional_JGST" class="box-jgst">-</div>
+            </div>
+            <div class="output-group">
+                <div class="output-label">IPA (Pelafalan)</div>
+                <div id="outTradisional_IPA" class="box-ipa">-</div>
+            </div>
         </div>
 
         <!-- 5. Cara Kawi -->
         <div class="card">
-            <div class="card-header">
-                5. Cara Kawi (carakawi.js)
-                <span class="badge">ngayogyann.ttf</span>
+            <div class="card-header">5. Cara Kawi <span class="badge">carakawi.js</span></div>
+            <div class="output-group">
+                <div class="output-label">Aksara Jawa</div>
+                <div id="outCaraKawi_Aksara" class="box-aksara font-ngayogyann">-</div>
             </div>
-            <div id="outCaraKawi" class="output-box font-ngayogyann">-</div>
-        </div>
-
-        <!-- 6. JGST -->
-        <div class="card">
-            <div class="card-header">
-                6. JGST (jgst.js)
-                <span class="badge">Transliterasi Aksara</span>
+            <div class="output-group">
+                <div class="output-label">JGST</div>
+                <div id="outCaraKawi_JGST" class="box-jgst">-</div>
             </div>
-            <div id="outJGST" class="output-box code-output">-</div>
-        </div>
-
-        <!-- 7. IPA -->
-        <div class="card">
-            <div class="card-header">
-                7. IPA (Pelafalan)
-                <span class="badge">Fonetik</span>
+            <div class="output-group">
+                <div class="output-label">IPA (Pelafalan)</div>
+                <div id="outCaraKawi_IPA" class="box-ipa">-</div>
             </div>
-            <div id="outIPA" class="output-box ipa-output">-</div>
         </div>
-    </div>
-
-    <div class="footer-info">
-        Aplikasi Komparasi Tata Tulis, JGST & IPA Aksara Jawa.
     </div>
 </div>
 
-<!-- Muat file JS external -->
 <script src="jgst.js"></script>
 
 <script>
-    // Module storage untuk mengisolasi variabel global dari file-file converter
-    const Modules = {
-        kbj: null,
-        sriwedari: null,
-        simplified: null,
-        tradisional: null,
-        carakawi: null
-    };
+    const Modules = { kbj: null, sriwedari: null, simplified: null, tradisional: null, carakawi: null };
 
-    // Fungsi pemuat skrip terisolasi
     async function loadScriptAsModule(url, fnName) {
         try {
             const resp = await fetch(url);
             const code = await resp.text();
-
-            // Mocking elemen DOM agar skrip external tidak bermasalah saat dipanggil
             const sandbox = {
-                document: {
-                    getElementById: () => ({
-                        addEventListener: () => {},
-                        style: {},
-                        value: '',
-                        textContent: '',
-                        innerText: ''
-                    })
-                },
-                window: {},
-                navigator: { clipboard: { writeText: () => Promise.resolve() } },
-                alert: () => {}
+                document: { getElementById: () => ({ addEventListener: () => {}, style: {}, value: '', textContent: '', innerText: '' }) },
+                window: {}, navigator: { clipboard: { writeText: () => Promise.resolve() } }, alert: () => {}
             };
-
             const factory = new Function('document', 'window', 'navigator', 'alert', code + `\n return typeof ${fnName} !== 'undefined' ? ${fnName} : null;`);
             return factory(sandbox.document, sandbox.window, sandbox.navigator, sandbox.alert);
         } catch (e) {
-            console.error(`Gagal memuat ${url}:`, e);
-            return null;
+            console.error(`Gagal memuat ${url}:`, e); return null;
         }
     }
 
-    // Inisialisasi pemuatan skrip
     async function initModules() {
         Modules.kbj = await loadScriptAsModule('kbj.js', 'transliterasiKalimat');
         Modules.sriwedari = await loadScriptAsModule('sriwedari.js', 'transliterasiKalimat');
         Modules.simplified = await loadScriptAsModule('simplified.js', 'transliterasiKalimat');
         Modules.tradisional = await loadScriptAsModule('tradisional.js', 'transliterateKawi');
         Modules.carakawi = await loadScriptAsModule('carakawi.js', 'transliterateKawi');
-        
-        // Jalankan transliterasi awal jika ada input awal
         processTransliteration();
     }
 
-    // Fungsi Transliterasi IPA berbasis aturan umum vokal/konsonan Jawa
-    function convertToIPA(text) {
-        if (!text.trim()) return '-';
-        let str = text.toLowerCase()
-            .replace(/e'/g, 'e').replace(/ex/g, 'e')
-            .replace(/ng/g, 'ŋ').replace(/ny/g, 'ɲ')
-            .replace(/dh/g, 'ɖ').replace(/th/g, 'ʈ')
-            .replace(/c/g, 'tʃ').replace(/j/g, 'dʒ')
-            .replace(/y/g, 'j').replace(/r/g, 'r')
-            .replace(/kh/g, 'x').replace(/sy/g, 'ʃ');
+    // Fungsi canggih untuk mengubah string JGST menjadi IPA
+    // IPA diturunkan langsung dari kode JGST sehingga hasil IPA menyesuaikan masing-masing tata tulis.
+    function convertJGSTtoIPA(jgstStr) {
+        if (!jgstStr || jgstStr === '-') return '-';
+        let str = jgstStr.toLowerCase();
+        
+        const ipaMap = {
+            'ā': 'aː', 'ī': 'iː', 'ū': 'uː', 'ě': 'ə', 'é': 'e', 'o': 'o',
+            'ñ': 'ɲ', 'ṅ': 'ŋ', 'ṇ': 'ɳ',
+            'ṭ': 'ʈ', 'ḍ': 'ɖ', 'c': 'tʃ', 'j': 'dʒ',
+            'y': 'j', 'ś': 'ʃ', 'ṣ': 'ʂ', 'ḥ': 'h',
+            'q': 'q', 'x': 'x', 'f': 'f', 'v': 'v', 'z': 'z'
+        };
 
-        return `[ ${str} ]`;
+        let ipaResult = '';
+        for (let i = 0; i < str.length; i++) {
+            let char = str[i];
+            if (ipaMap[char] !== undefined) {
+                ipaResult += ipaMap[char];
+            } else {
+                ipaResult += char;
+            }
+        }
+        
+        // Membersihkan jika ada spasi berlebih
+        ipaResult = ipaResult.replace(/\s+/g, ' ').trim();
+        return ipaResult ? `[ ${ipaResult} ]` : '-';
     }
 
-    // Fungsi pemrosesan utama
-    function processTransliteration() {
-        const input = document.getElementById('inputLatin').value;
+    function processCardOutput(moduleId, fnKey, input) {
+        const outAksara = document.getElementById(`out${moduleId}_Aksara`);
+        const outJGST = document.getElementById(`out${moduleId}_JGST`);
+        const outIPA = document.getElementById(`out${moduleId}_IPA`);
 
-        if (!input.trim()) {
-            document.getElementById('outKBJ').textContent = '-';
-            document.getElementById('outSriwedari').textContent = '-';
-            document.getElementById('outSimplified').textContent = '-';
-            document.getElementById('outTradisional').textContent = '-';
-            document.getElementById('outCaraKawi').textContent = '-';
-            document.getElementById('outJGST').textContent = '-';
-            document.getElementById('outIPA').textContent = '-';
+        if (!input.trim() || !Modules[fnKey]) {
+            outAksara.textContent = '-'; outJGST.textContent = '-'; outIPA.textContent = '-';
             return;
         }
 
-        // 1. KBJ
-        const resKBJ = Modules.kbj ? Modules.kbj(input) : '-';
-        document.getElementById('outKBJ').textContent = resKBJ;
+        // 1. Dapatkan Aksara
+        const resAksara = Modules[fnKey](input);
+        outAksara.textContent = resAksara;
 
-        // 2. Sriwedari
-        const resSriwedari = Modules.sriwedari ? Modules.sriwedari(input) : '-';
-        document.getElementById('outSriwedari').textContent = resSriwedari;
-
-        // 3. Simplified
-        const resSimplified = Modules.simplified ? Modules.simplified(input) : '-';
-        document.getElementById('outSimplified').textContent = resSimplified;
-
-        // 4. Tradisional
-        const resTradisional = Modules.tradisional ? Modules.tradisional(input) : '-';
-        document.getElementById('outTradisional').textContent = resTradisional;
-
-        // 5. Cara Kawi
-        const resCaraKawi = Modules.carakawi ? Modules.carakawi(input) : '-';
-        document.getElementById('outCaraKawi').textContent = resCaraKawi;
-
-        // 6. JGST (Mengambil hasil transliterasi Aksara Jawa Sriwedari/Simplified lalu diurai via jgst.js)
-        if (typeof transliterateToJGST === 'function' && resSimplified !== '-') {
-            document.getElementById('outJGST').textContent = transliterateToJGST(resSimplified);
-        } else {
-            document.getElementById('outJGST').textContent = '-';
+        // 2. Dapatkan JGST dari Aksara tersebut
+        let resJGST = '-';
+        if (typeof transliterateToJGST === 'function') {
+            resJGST = transliterateToJGST(resAksara);
         }
+        outJGST.textContent = resJGST;
 
-        // 7. IPA
-        document.getElementById('outIPA').textContent = convertToIPA(input);
+        // 3. Dapatkan IPA dari JGST tersebut
+        outIPA.textContent = convertJGSTtoIPA(resJGST);
     }
 
-    // Event Listener Input
-    document.getElementById('inputLatin').addEventListener('input', processTransliteration);
+    function processTransliteration() {
+        const input = document.getElementById('inputLatin').value;
+        processCardOutput('KBJ', 'kbj', input);
+        processCardOutput('Sriwedari', 'sriwedari', input);
+        processCardOutput('Simplified', 'simplified', input);
+        processCardOutput('Tradisional', 'tradisional', input);
+        processCardOutput('CaraKawi', 'carakawi', input);
+    }
 
-    // Jalankan pemuatan skrip saat dokumen siap
+    document.getElementById('inputLatin').addEventListener('input', processTransliteration);
     window.addEventListener('DOMContentLoaded', initModules);
 </script>
 
