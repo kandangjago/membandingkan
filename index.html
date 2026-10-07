@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Membandingkan Tata Tulis Aksara Jawa</title>
+    
+    <!-- Load Fonts: PT Serif for UI -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=PT+Serif:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        :root {
+            font-family: 'PT Serif', serif;
+        }
+
+        @font-face {
+            font-family: 'Ngayogyann';
+            src: url('ngayogyann.ttf') format('truetype');
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: 'Ngayogyan';
+            src: url('ngayogyan.ttf') format('truetype');
+            font-display: swap;
+        }
+
+        /* 
+           Aksara Jawa Fonts: Size minimal 2rem (here set to 2.5rem for better clarity)
+        */
+        .font-jawa-nn {
+            font-family: 'Ngayogyann', serif;
+            font-size: 2.5rem;
+            line-height: 1.6;
+        }
+
+        .font-jawa-n {
+            font-family: 'Ngayogyan', serif;
+            font-size: 2.5rem;
+            line-height: 1.6;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1e1b4b 0%, #3b0764 50%, #000000 100%);
+            color: #f8fafc;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .text-gradient {
+            background: linear-gradient(to right, #f472b6, #fbbf24);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* 3D Glassmorphism Cards */
+        .card-3d {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            border-left: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 
+                0 10px 30px rgba(0, 0, 0, 0.6),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            border-radius: 1.25rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card-3d:hover {
+            transform: translateY(-5px);
+            box-shadow: 
+                0 15px 35px rgba(0, 0, 0, 0.7),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+
+        /* 3D Button */
+        .btn-3d {
+            background: linear-gradient(to bottom, #d946ef, #9333ea);
+            border: none;
+            border-radius: 0.75rem;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            font-weight: 700;
+            box-shadow: 
+                0 6px 0 #581c87,
+                0 10px 20px rgba(0, 0, 0, 0.4),
+                inset 0 1px 1px rgba(255, 255, 255, 0.4);
+            transition: all 0.1s ease;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .btn-3d:active {
+            transform: translateY(6px);
+            box-shadow: 
+                0 0 0 #581c87,
+                0 4px 10px rgba(0, 0, 0, 0.4),
+                inset 0 1px 1px rgba(255, 255, 255, 0.4);
+        }
+
+        /* Custom Input */
+        .input-neumorphic {
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            box-shadow: inset 0 4px 6px rgba(0, 0, 0, 0.6);
+            border-radius: 1rem;
+            font-size: 1.125rem;
+            transition: border-color 0.3s;
+        }
+
+        .input-neumorphic:focus {
+            outline: none;
+            border-color: #d946ef;
+        }
+
+        /* Fluid Grid using clamp */
+        .fluid-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(clamp(280px, 30vw, 450px), 1fr));
+            gap: 1.5rem;
+        }
+        
+        .loading-spinner {
+            display: inline-block;
+            width: 1rem;
+            height: 1rem;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8 flex flex-col items-center">
+
+    <div class="w-full max-w-7xl mb-8 flex flex-col md:flex-row justify-between items-center gap-6">
+        <h1 class="text-3xl md:text-5xl font-bold text-center md:text-left text-gradient drop-shadow-lg tracking-wide">
+            Membandingkan Tata Tulis Aksara Jawa
+        </h1>
+        <button class="btn-3d whitespace-nowrap" onclick="navigateToParamasastra()">
+            Aplikasi Paramasastra (Morfologi Jawa)
+        </button>
+    </div>
+
+    <div class="w-full max-w-7xl mb-12">
+        <div class="card-3d p-6 md:p-8">
+            <label for="latinInput" class="block text-xl font-bold mb-4 text-pink-300">
+                Huruf Latin
+            </label>
+            <textarea id="latinInput" rows="4" 
+                class="input-neumorphic w-full p-4 resize-y"
+                placeholder="Ketik kalimat atau kata dalam huruf Latin di sini..."></textarea>
+            
+            <div id="statusIndicator" class="mt-3 text-sm text-purple-300 flex items-center gap-2 h-5">
+                <span class="loading-spinner"></span> Memuat modul aksara jawa...
+            </div>
+        </div>
+    </div>
+
+    <div class="w-full max-w-7xl fluid-grid pb-12">
+        
+        <!-- Card: KBJ -->
+        <div class="card-3d p-6 flex flex-col h-full">
+            <h2 class="text-lg font-bold text-pink-400 border-b border-white/20 pb-2 mb-4 uppercase tracking-widest">KBJ</h2>
+            <div id="out-kbj" class="font-jawa-nn text-yellow-100 flex-grow break-words text-shadow"></div>
+        </div>
+
+        <!-- Card: Sriwedari -->
+        <div class="card-3d p-6 flex flex-col h-full">
+            <h2 class="text-lg font-bold text-pink-400 border-b border-white/20 pb-2 mb-4 uppercase tracking-widest">Sriwedari</h2>
+            <div id="out-sriwedari" class="font-jawa-nn text-yellow-100 flex-grow break-words text-shadow"></div>
+        </div>
+
+        <!-- Card: KAJ Simplified -->
+        <div class="card-3d p-6 flex flex-col h-full">
+            <h2 class="text-lg font-bold text-pink-400 border-b border-white/20 pb-2 mb-4 uppercase tracking-widest">KAJ Simplified</h2>
+            <div id="out-simplified" class="font-jawa-nn text-yellow-100 flex-grow break-words text-shadow"></div>
+        </div>
+
+        <!-- Card: KAJ Tradisional -->
+        <div class="card-3d p-6 flex flex-col h-full">
+            <h2 class="text-lg font-bold text-pink-400 border-b border-white/20 pb-2 mb-4 uppercase tracking-widest">KAJ Tradisional</h2>
+            <div id="out-tradisional" class="font-jawa-n text-yellow-100 flex-grow break-words text-shadow"></div>
+        </div>
+
+        <!-- Card: Cara Kawi -->
+        <div class="card-3d p-6 flex flex-col h-full">
+            <h2 class="text-lg font-bold text-pink-400 border-b border-white/20 pb-2 mb-4 uppercase tracking-widest">Cara Kawi</h2>
+            <div id="out-carakawi" class="font-jawa-nn text-yellow-100 flex-grow break-words text-shadow"></div>
+        </div>
+
+        <!-- Card: JGST -->
+        <div class="card-3d p-6 flex flex-col h-full">
+            <h2 class="text-lg font-bold text-pink-400 border-b border-white/20 pb-2 mb-4 uppercase tracking-widest">JGST</h2>
+            <div id="out-jgst" class="text-2xl font-serif text-blue-200 flex-grow break-words italic tracking-wide"></div>
+        </div>
+
+        <!-- Card: IPA -->
+        <div class="card-3d p-6 flex flex-col h-full">
+            <h2 class="text-lg font-bold text-pink-400 border-b border-white/20 pb-2 mb-4 uppercase tracking-widest">IPA</h2>
+            <div id="out-ipa" class="text-2xl font-sans text-green-200 flex-grow break-words tracking-wide"></div>
+        </div>
+
+    </div>
+
+    <script>
+        // UI Elements
+        const inputElement = document.getElementById('latinInput');
+        const statusIndicator = document.getElementById('statusIndicator');
+        const outputElements = {
+            kbj: document.getElementById('out-kbj'),
+            sriwedari: document.getElementById('out-sriwedari'),
+            simplified: document.getElementById('out-simplified'),
+            tradisional: document.getElementById('out-tradisional'),
+            carakawi: document.getElementById('out-carakawi'),
+            jgst: document.getElementById('out-jgst'),
+            ipa: document.getElementById('out-ipa')
+        };
+
+        // Functional containers
+        let funcKBJ = null;
+        let funcSriwedari = null;
+        let funcSimplified = null;
+        let funcTradisional = null;
+        let funcCaraKawi = null;
+        let funcJGST = null;
+        let isModulesLoaded = false;
+
+        /**
+         * STREAMING_CHUNK: Module Loading with Isolation
+         * Uses `new Function` with mocked DOM objects so standalone scripts 
+         * that try to access document.getElementById or addEventListener 
+         * during initialization won't throw unhandled errors.
+         */
+        async function loadScript(url) {
+            try {
+                const res = await fetch(url);
+                if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+                const code = await res.text();
+                
+                // MOCK DOM Environment for isolated execution
+                const mockDOM = `
+                    const document = {
+                        getElementById: () => ({
+                            addEventListener: () => {},
+                            style: {},
+                            value: '',
+                            textContent: '',
+                            scrollIntoView: () => {}
+                        })
+                    };
+                    const window = { addEventListener: () => {}, onload: null };
+                    const navigator = { clipboard: { writeText: () => Promise.resolve() } };
+                    const alert = () => {};
+                `;
+
+                return new Function(`
+                    ${mockDOM};
+                    try {
+                        ${code};
+                    } catch(e) {
+                        console.error('Error executing module ${url}: ', e);
+                    }
+                    
+                    // Return the specific transliteration function
+                    if (typeof transliterasiKalimat !== 'undefined') return transliterasiKalimat;
+                    if (typeof transliterateKawi !== 'undefined') return transliterateKawi;
+                    if (typeof transliterateToJGST !== 'undefined') return transliterateToJGST;
+                    
+                    return (t) => "Function not found in ${url}";
+                `)();
+            } catch (error) {
+                console.error(`Gagal memuat ${url}:`, error);
+                return (t) => `Error loading ${url}`;
+            }
+        }
+
+        function transliterateIPA(text) {
+            if (!text) return '';
+            let t = text.toLowerCase();
+            // Digraphs & Exceptions
+            t = t.replace(/ng/g, 'ŋ')
+                 .replace(/ny/g, 'ɲ')
+                 .replace(/dh/g, 'ɖ')
+                 .replace(/th/g, 'ʈ')
+                 .replace(/c/g, 'tʃ')
+                 .replace(/j/g, 'dʒ')
+                 .replace(/y/g, 'j')
+                 .replace(/é/g, 'e')
+                 .replace(/è/g, 'ɛ')
+                 .replace(/e/g, 'ə')
+                 .replace(/kh/g, 'x')
+                 .replace(/sy/g, 'ʃ');
+            return `/${t}/`;
+        }
+
+        async function initModules() {
+            try {
+                const results = await Promise.all([
+                    loadScript('kbj.js'),
+                    loadScript('sriwedari.js'),
+                    loadScript('simplified.js'),
+                    loadScript('tradisional.js'),
+                    loadScript('carakawi.js'),
+                    loadScript('jgst.js')
+                ]);
+
+                [funcKBJ, funcSriwedari, funcSimplified, funcTradisional, funcCaraKawi, funcJGST] = results;
+                
+                isModulesLoaded = true;
+                statusIndicator.innerHTML = '<span class="text-green-400">✓ Modul berhasil dimuat. Siap transliterasi.</span>';
+                setTimeout(() => { statusIndicator.style.display = 'none'; }, 3000);
+                
+                // Trigger an initial processing if input is already filled
+                processAll();
+            } catch (err) {
+                statusIndicator.innerHTML = '<span class="text-red-400">✗ Gagal memuat beberapa modul.</span>';
+                console.error("Initialization error:", err);
+            }
+        }
+
+        function processAll() {
+            if (!isModulesLoaded) return;
+            const text = inputElement.value;
+            
+            if (!text.trim()) {
+                Object.values(outputElements).forEach(el => el.textContent = '');
+                return;
+            }
+
+            // Execute all transliterations safely
+            try { outputElements.kbj.textContent = funcKBJ ? funcKBJ(text) : ''; } catch (e) {}
+            try { outputElements.sriwedari.textContent = funcSriwedari ? funcSriwedari(text) : ''; } catch (e) {}
+            try { outputElements.simplified.textContent = funcSimplified ? funcSimplified(text) : ''; } catch (e) {}
+            try { outputElements.tradisional.textContent = funcTradisional ? funcTradisional(text) : ''; } catch (e) {}
+            try { outputElements.carakawi.textContent = funcCaraKawi ? funcCaraKawi(text) : ''; } catch (e) {}
+            try { outputElements.jgst.textContent = funcJGST ? funcJGST(text) : ''; } catch (e) {}
+            
+            // IPA
+            outputElements.ipa.textContent = transliterateIPA(text);
+        }
+
+        let debounceTimeout;
+        inputElement.addEventListener('input', () => {
+            clearTimeout(debounceTimeout);
+            debounceTimeout = setTimeout(processAll, 300); // 300ms debounce
+        });
+
+        // Dummy Navigation function
+        function navigateToParamasastra() {
+            // Replace with actual navigation logic or scroll if on the same page
+            const messageBox = document.createElement('div');
+            messageBox.className = 'fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-indigo-900 text-white p-6 rounded-2xl shadow-2xl z-50 text-center border border-indigo-400';
+            messageBox.innerHTML = `
+                <h3 class="text-xl font-bold mb-2">Navigasi</h3>
+                <p class="mb-4">Fitur ini akan mengarahkan ke Aplikasi Paramasastra.</p>
+                <button class="bg-indigo-600 px-4 py-2 rounded-lg font-bold" onclick="this.parentElement.remove()">Tutup</button>
+            `;
+            document.body.appendChild(messageBox);
+        }
+
+        // Initialize on load
+        window.onload = initModules;
+
+    </script>
+</body>
+</html>
