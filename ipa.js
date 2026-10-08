@@ -52,18 +52,13 @@ function convertJGSTtoIPA(jgstStr, rawLatinToken) {
         str = str.replace(/[éè]/g, 'e'); 
         str = str.replace(/ě/g, 'ə'); 
 
-        // 3. Penerapan Wa & Ya (Suku Kata Pertama = Tebal, Panglancar = Tipis)
-        str = str.replace(/^w/g, 'w̤').replace(/^y/g, 'j̤');
-        str = str.replace(/^([bcdfghjklmnpqrstvwxyzḥŋṙṃñṅṇṭḍc jśṣqxfvz])w/g, '$1w̤');
-        str = str.replace(/^([bcdfghjklmnpqrstvwxyzḥŋṙṃñṅṇṭḍc jśṣqxfvz])y/g, '$1j̤');
-
-        // 4. Pemetaan Karakter IPA Utuh
+        // 3. Pemetaan Karakter IPA Utuh
         const ipaMap = {
             'ā': 'aː', 'ī': 'iː', 'ū': 'uː',
             'ñ': 'ɲ', 'ṅ': 'ŋ', 'ṇ': 'ɳ',
             'ṭ': 'ʈ', 'ḍ': 'ɖ', 'c': 'tʃ', 'j': 'dʒ',
-            'y': 'j', // Ya Tipis (panglancar/medial biasa)
-            'w': 'w', // Wa Tipis (panglancar/medial biasa)
+            'y': 'j', // Ya Tipis bawaan -> IPA /j/
+            'w': 'w', // Wa Tipis bawaan -> IPA /w/
             'ś': 'ʃ', 'ṣ': 'ʂ', 'ḥ': 'h',
             'q': 'q', 'x': 'x', 'f': 'f', 'v': 'v', 'z': 'z',
             'ṃ': 'm', 'ṙ': 'r', 'ṛ': 'rə', 'ḷ': 'lə',
@@ -75,6 +70,12 @@ function convertJGSTtoIPA(jgstStr, rawLatinToken) {
             let char = str[i];
             res += (ipaMap[char] !== undefined) ? ipaMap[char] : char;
         }
+
+        // 4. Penentuan Ya Tebal [j̤] & Wa Tebal [w̤] SETELAH pemetaan ipaMap
+        // (Dilakukan di akhir agar simbol /j/ tidak tertukar dengan /dʒ/)
+        res = res.replace(/^w/g, 'w̤').replace(/^j/g, 'j̤');
+        res = res.replace(/^([bcdfghjklmnpqrstvwxyzḥŋṙṃñṅṇʈɖtʃdʒʃʂqxfvz])w/g, '$1w̤');
+        res = res.replace(/^([bcdfghjklmnpqrstvwxyzḥŋṙṃñṅṇʈɖtʃdʒʃʂqxfvz])j/g, '$1j̤');
 
         return res;
     });
