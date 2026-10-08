@@ -35,7 +35,7 @@ Aplikasi web sederhana untuk membandingkan hasil transliterasi Latin → Aksara 
 Aplikasi ini memuat 5 modul transliterasi terpisah:
 
 | # | Paugeran/Tata Tulis | Font | Karakteristik |
-|---|----------|------|------|---------------|
+|---|----------|------|---------------|
 | 1 | **KBJ** | Ngayogyan New | Kongres Bahasa Jawa. Paugeran paling umum diajarkan saat ini |
 | 2 | **Sriwedari** | Ngayogyan New | Hasil Kongres Sriwedari, mempertahankan banyak tradisi |
 | 3 | **Simplified** | Ngayogyan New | Penyederhanaan untuk kemudahan belajar |
