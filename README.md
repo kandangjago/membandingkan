@@ -4,9 +4,12 @@ Aplikasi web sederhana untuk membandingkan hasil transliterasi Latin → Aksara 
 
 > **Live Demo:** [`https://www.kandangjago.com`](https://www.kandangjago.com)
 
-[License](https://img.shields.io/badge/license-MIT-blue)
-[HTML5](https://img.shields.io/badge/built%20with-HTML%2FCSS%2FJS-orange)
-[Aksara Jawa](https://img.shields.io/badge/Aksara-Jawa-red)
+
+![Aksara Jawa](https://img.shields.io/badge/Aksara-Jawa-%230056b3?style=for-the-badge)
+![Harmonisasi Aksara](https://img.shields.io/badge/Harmonisasi-Aksara-%230056b3?style=for-the-badge)
+
+![License](https://img.shields.io/badge/license-KANDANGJAGO-green?style=flat-square)
+![Made in Yogyakarta](https://img.shields.io/badge/Made%20in-Yogyakarta-blue?style=flat-square)
 
 ---
 
