@@ -1,6 +1,6 @@
 /**
  * SIMPLIFIED.JS
- * Modifikasi dari kbj.js untuk mendukung tambahan Aksara Rekan, Aksara Murda, dan Aksara Swara (termasuk AI & AU).
+ * Modifikasi dari kbj.js untuk mendukung tambahan Aksara Rekan, Aksara Murda, dan Aksara Swara (termasuk AI, AU, AA, II, UU, REE, & LEE).
  *
  * PANDUAN PENGETIKAN AKSARA REKAN BARU (Berdasarkan Pelafalan IPA Arab):
  * q   -> ꦐ (ق) - IPA: /q/
@@ -18,9 +18,9 @@
  * C -> ꦖ
  * R -> ꦬ
  * 
- * TAMBAHAN AKSARA SWARA:
- * AI -> ꦍ
- * AU -> ꦎꦴ
+ * TAMBAHAN AKSARA SWARA PANJANG:
+ * AA -> ꦄꦴ, II -> ꦇ, UU -> ꦈꦴ, REE -> ꦉꦴ, LEE -> ꦋ
+ * AI -> ꦍ, AU -> ꦎꦴ
  */
 
 const KAMUS_AKSARA = {
@@ -53,81 +53,117 @@ const AKSARA_MURDA = {
 
 const SWARA_MAP = {
     'A':'ꦄ', 'I':'ꦆ', 'U':'ꦈ', 'E':'ꦄꦼ', 'É':'ꦌ', 'È':'ꦌ', 'Ê':'ꦄꦼ', 'O':'ꦎ',
-    'AI':'ꦍ', 'AU':'ꦎꦴ' // Penambahan Aksara Swara AI dan AU
+    'AI':'ꦍ', 'AU':'ꦎꦴ', // Aksara Swara Diftong
+    'AA':'ꦄꦴ', 'II':'ꦇ', 'UU':'ꦈꦴ', 'REE':'ꦉꦴ', 'LEE':'ꦋ' // Aksara Swara Panjang
 };
 
 const ANGKA = ['꧐','꧑','꧒','꧓','꧔','꧕','꧖','꧗','꧘','꧙'];
 
 function scrollToParamasastra() {
-    document.getElementById('paramasastra-app').scrollIntoView({ behavior: 'smooth' });
+    let el = document.getElementById('paramasastra-app');
+    if (el) el.scrollIntoView({ behavior: 'smooth' });
 }
 
 function ubahFont() {
-    let fontTerpilih = document.getElementById('fontSelect').value;
-    document.getElementById('outputJawa').style.fontFamily = fontTerpilih;
-    document.getElementById('outParamJawa').style.fontFamily = fontTerpilih;
+    let fontSel = document.getElementById('fontSelect');
+    if (!fontSel) return;
+    let fontTerpilih = fontSel.value;
+    let outJawa = document.getElementById('outputJawa');
+    let outParam = document.getElementById('outParamJawa');
+    if (outJawa) outJawa.style.fontFamily = fontTerpilih;
+    if (outParam) outParam.style.fontFamily = fontTerpilih;
 }
 
 function ubahUkuranFont() {
-    let ukuran = document.getElementById('fontSizeSlider').value;
-    document.getElementById('outputJawa').style.fontSize = ukuran + 'rem';
+    let slider = document.getElementById('fontSizeSlider');
+    if (!slider) return;
+    let ukuran = slider.value;
+    let outJawa = document.getElementById('outputJawa');
+    if (outJawa) outJawa.style.fontSize = ukuran + 'rem';
 }
 
 function ubahJarakBaris() {
-    let lineH = document.getElementById('lineHeightSlider').value;
-    document.getElementById('outputJawa').style.lineHeight = lineH;
-    document.getElementById('outParamJawa').style.lineHeight = lineH;
+    let lineH = document.getElementById('lineHeightSlider');
+    if (!lineH) return;
+    let val = lineH.value;
+    let outJawa = document.getElementById('outputJawa');
+    let outParam = document.getElementById('outParamJawa');
+    if (outJawa) outJawa.style.lineHeight = val;
+    if (outParam) outParam.style.lineHeight = val;
 }
 
 function hapusSemua() {
-    document.getElementById('inputLatin').value = '';
+    let inp = document.getElementById('inputLatin');
+    if (inp) inp.value = '';
     prosesTransliterasi();
 }
 
 function salinAksara() {
-    let teksAksara = document.getElementById('outputJawa').innerText;
+    let el = document.getElementById('outputJawa');
+    if (!el) return;
+    let teksAksara = el.innerText;
     if (!teksAksara) return;
     navigator.clipboard.writeText(teksAksara).then(() => {
         let btn = document.getElementById('btnSalin');
-        let originalText = btn.innerText;
-        btn.innerText = 'Tersalin!';
-        setTimeout(() => { btn.innerText = originalText; }, 2000);
+        if (btn) {
+            let originalText = btn.innerText;
+            btn.innerText = 'Tersalin!';
+            setTimeout(() => { btn.innerText = originalText; }, 2000);
+        }
     });
 }
 
 function salinParamLatin() {
-    let teksLatin = document.getElementById('outParamLatin').value;
+    let el = document.getElementById('outParamLatin');
+    if (!el) return;
+    let teksLatin = el.value;
     if (!teksLatin) return;
     navigator.clipboard.writeText(teksLatin);
 }
 
 function salinParamJawa() {
-    let teksAksara = document.getElementById('outParamJawa').innerText;
+    let el = document.getElementById('outParamJawa');
+    if (!el) return;
+    let teksAksara = el.innerText;
     if (!teksAksara) return;
     navigator.clipboard.writeText(teksAksara).then(() => {
         let btn = document.getElementById('btnSalinParam');
-        let originalText = btn.innerText;
-        btn.innerText = 'Tersalin!';
-        setTimeout(() => { btn.innerText = originalText; }, 2000);
+        if (btn) {
+            let originalText = btn.innerText;
+            btn.innerText = 'Tersalin!';
+            setTimeout(() => { btn.innerText = originalText; }, 2000);
+        }
     });
 }
 
 function updateParamFromManualInput() {
-    let val = document.getElementById('outParamLatin').value;
-    document.getElementById('outParamJawa').innerText = transliterasiKalimat(val);
+    let inp = document.getElementById('outParamLatin');
+    let out = document.getElementById('outParamJawa');
+    if (inp && out) {
+        out.innerText = transliterasiKalimat(inp.value);
+    }
 }
 
 function prosesParamasastra() {
-    let ater = document.getElementById('selAter').value;
-    let dasarRaw = document.getElementById('inDasar').value.trim();
-    let dasar = dasarRaw.replace(/e'/g, 'é').replace(/E'/g, 'É').toLowerCase();
-    let panam = document.getElementById('selPanam').value;
+    let selAter = document.getElementById('selAter');
+    let inDasar = document.getElementById('inDasar');
+    let selPanam = document.getElementById('selPanam');
+    if (!selAter || !inDasar || !selPanam) return;
 
-    document.getElementById('paramWarningArea').innerHTML = "";
+    let ater = selAter.value;
+    let dasarRaw = inDasar.value.trim();
+    let dasar = dasarRaw.replace(/e'/g, 'é').replace(/E'/g, 'É').toLowerCase();
+    let panam = selPanam.value;
+
+    let warnArea = document.getElementById('paramWarningArea');
+    let outLat = document.getElementById('outParamLatin');
+    let outJaw = document.getElementById('outParamJawa');
+
+    if (warnArea) warnArea.innerHTML = "";
 
     if(!dasar) {
-        document.getElementById('outParamLatin').value = "";
-        document.getElementById('outParamJawa').innerHTML = "";
+        if (outLat) outLat.value = "";
+        if (outJaw) outJaw.innerHTML = "";
         return;
     }
 
@@ -146,9 +182,9 @@ function prosesParamasastra() {
     }
 
     if (errorMsg !== "") {
-        document.getElementById('paramWarningArea').innerHTML = `<div class="param-warning">⚠️ WARNING PAUGERAN KBJ: ${errorMsg}</div>`;
-        document.getElementById('outParamLatin').value = "";
-        document.getElementById('outParamJawa').innerHTML = "";
+        if (warnArea) warnArea.innerHTML = `<div class="param-warning">⚠️ WARNING PAUGERAN KBJ: ${errorMsg}</div>`;
+        if (outLat) outLat.value = "";
+        if (outJaw) outJaw.innerHTML = "";
         return;
     }
 
@@ -388,17 +424,21 @@ function prosesParamasastra() {
         fullLatinDisplay = `${resultLatinMain} (${resultLatinAlt})`;
     }
 
-    document.getElementById('outParamLatin').value = fullLatinDisplay;
-    document.getElementById('outParamJawa').innerText = transliterasiKalimat(fullLatinDisplay);
+    if (outLat) outLat.value = fullLatinDisplay;
+    if (outJaw) outJaw.innerText = transliterasiKalimat(fullLatinDisplay);
 }
 
 function prosesTransliterasi() {
-    let teksInput = document.getElementById('inputLatin').value;
+    let inp = document.getElementById('inputLatin');
+    let out = document.getElementById('outputJawa');
+    if (!inp || !out) return;
+    let teksInput = inp.value;
     let hasil = transliterasiKalimat(teksInput);
-    document.getElementById('outputJawa').innerText = hasil;
+    out.innerText = hasil;
 }
 
 function transliterasiKalimat(teks) {
+    if (!teks) return "";
     let teksDiolah = teks.replace(/e'/g, 'é').replace(/E'/g, 'É');
 
     teksDiolah = teksDiolah.replace(/\b(mb|ndh|nd|nth|ngg|nj)/gim, function(match) {
@@ -414,7 +454,7 @@ function transliterasiKalimat(teks) {
         let lineJoined = kataJawa.join(''); 
         
         lineJoined = lineJoined.replace(/꧀ꦊ/g, '꧀ꦭꦼ');
-        lineJoined = lineJoined.replace(/꧀([ꦄꦆꦈꦌꦎꦍ])/g, '꧀\u200C$1');
+        lineJoined = lineJoined.replace(/꧀([ꦄꦆꦈꦌꦎꦍꦇ])/g, '꧀\u200C$1');
 
         lineJoined = lineJoined.replace(/([ꦀ-꧟])꧀([ꦀ-꧟])(꦳?)꧀([ꦀ-꧟])/g, function(match, p1, p2, p3, p4) {
             if (p2 === 'ꦥ' || p2 === 'ꦱ') return match; 
@@ -566,12 +606,18 @@ function transliterasiSingleKata(rawLatin) {
         let c2 = c2_raw.toLowerCase();
         let c1 = c1_raw.toLowerCase();
 
-        // Pengecekan 2 karakter untuk Aksara Swara Gabungan (AI & AU)
-        if (['AI', 'Ai', 'ai'].includes(c2_raw) && SWARA_MAP['AI']) {
-            c = 'AI'; isSwara = true; jump = 2;
-        } else if (['AU', 'Au', 'au'].includes(c2_raw) && SWARA_MAP['AU']) {
-            c = 'AU'; isSwara = true; jump = 2;
-        } else if ((c2_raw === 'NY' || c2_raw === 'Ny') && AKSARA_MURDA['ny']) {
+        let c3_upper = c3_raw.toUpperCase();
+        let c2_upper = c2_raw.toUpperCase();
+
+        // Pengecekan Vokal Panjang 3 Karakter (REE & LEE)
+        if ((c3_upper === 'REE' || c3_upper === 'LEE') && SWARA_MAP[c3_upper]) {
+            c = c3_upper; isSwara = true; jump = 3;
+        } 
+        // Pengecekan Vokal Panjang / Diftong 2 Karakter (AA, II, UU, AI, AU)
+        else if (SWARA_MAP[c2_upper] && ['AA', 'II', 'UU', 'AI', 'AU'].includes(c2_upper)) {
+            c = c2_upper; isSwara = true; jump = 2;
+        } 
+        else if ((c2_raw === 'NY' || c2_raw === 'Ny') && AKSARA_MURDA['ny']) {
             c = 'ny'; jump = 2; isMurda = true;
         } else if (c1_raw === 'J' && AKSARA_MURDA['j']) {
             c = 'j'; jump = 1; isMurda = true;
@@ -675,4 +721,8 @@ function transliterasiSingleKata(rawLatin) {
         if (c !== "") isFirstAksara = false;
     }
     return res;
+}
+
+if (typeof window !== 'undefined') {
+    window.transliterasiKalimat = transliterasiKalimat;
 }
