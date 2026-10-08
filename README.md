@@ -2,7 +2,6 @@
 
 Aplikasi web sederhana untuk membandingkan hasil transliterasi Latin → Aksara Jawa dari berbagai paugeran tata tulis secara real-time. Dibuat untuk membantu pembelajar, pengajar, dan pegiat Aksara Jawa memahami perbedaan antar sistem penulisan.
 
-> **Live Demo:** ['https://www.kandangjago.com'](https://www.kandangjago.com)
 > **Live Demo:** [`https://www.kandangjago.com`](https://www.kandangjago.com)
 
 [License](https://img.shields.io/badge/license-MIT-blue)
