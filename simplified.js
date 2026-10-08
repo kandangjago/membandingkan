@@ -23,7 +23,6 @@ const AKSARA_MURDA = {
     'r':'ꦬ'
 };
 
-// Map Aksara Swara Kapital / Mandiri
 const SWARA_MAP = {
     'A':'ꦄ', 'I':'ꦆ', 'U':'ꦈ', 'E':'ꦄꦼ', 'É':'ꦌ', 'È':'ꦌ', 'Ê':'ꦄꦼ', 'O':'ꦎ',
     'AI':'ꦍ', 'AU':'ꦎꦴ',
@@ -494,8 +493,17 @@ function transliterasiSingleKata(rawLatin) {
 
     let latinProcessed = rawLatin;
 
+    // Kecualikan pemrosesan tanda hubung jika berada di antara dua vokal yang sama (seperti a-a, i-i, u-u)
     latinProcessed = latinProcessed.replace(/([a-zA-ZéèêÉÈÊ]+)-([a-zA-ZéèêÉÈÊ]+)/g, function(match, root, suffix) {
         if (root.toLowerCase() === suffix.toLowerCase()) return root + suffix;
+
+        let rootLast = root.slice(-1).toLowerCase();
+        let suffixFirst = suffix.charAt(0).toLowerCase();
+        let vowels = ['a','i','u','e','o','é','è','ê'];
+
+        if (vowels.includes(rootLast) && vowels.includes(suffixFirst) && rootLast === suffixFirst) {
+            return match; // Biarkan tetap ma-a agar dibaca terpisah menjadi ma-ha
+        }
 
         let suffixLower = suffix.toLowerCase();
         let isPepetSuffix = (suffixLower === 'aken' || suffixLower === 'kaken' || suffixLower === 'en' || suffixLower === 'nen');
@@ -503,7 +511,6 @@ function transliterasiSingleKata(rawLatin) {
 
         let lastChar = root.slice(-1).toLowerCase();
         let lastTwoChars = root.slice(-2).toLowerCase();
-        let vowels = ['a','i','u','e','o','é','è','ê'];
         
         if ((modSuffix.toLowerCase() === 'kaké' || modSuffix.toLowerCase() === 'kaken') && vowels.includes(lastChar)) {
             modSuffix = 'kxh' + modSuffix.substring(1); 
@@ -531,7 +538,7 @@ function transliterasiSingleKata(rawLatin) {
         }
     });
 
-    // Pengecualian Vokal Panjang: Jangan ubah vokal ganda panjang (aa, ii, uu, ai, au, ree, lee) menjadi h/y/w otomatis
+    // Pengecualian Vokal Panjang: Jangan ubah vokal ganda panjang (aa, ii, uu, ai, au) menjadi h/y/w otomatis
     let prevLatin = "";
     while (latinProcessed !== prevLatin) {
         prevLatin = latinProcessed;
@@ -574,6 +581,10 @@ function transliterasiSingleKata(rawLatin) {
             if (res.endsWith('꧀')) { res += '꧈\u200C'; } else { res += '꧉'; }
             i++; continue; 
         }
+
+        if (latin[i] === '-') {
+            i++; continue;
+        }
         
         if (!/[a-zA-ZéèêÉÈÊ]/.test(latin[i])) {
             res += latin[i]; i++; continue; 
@@ -595,7 +606,6 @@ function transliterasiSingleKata(rawLatin) {
         let c3_upper = c3_raw.toUpperCase();
         let c2_upper = c2_raw.toUpperCase();
 
-        // 1. Pengecekan Aksara Swara Panjang Kapital Mandiri (REE & LEE / AA, II, UU, AI, AU)
         if ((c3_upper === 'REE' || c3_upper === 'LEE') && c3_raw === c3_upper && SWARA_MAP[c3_upper]) {
             c = c3_upper; isSwara = true; jump = 3;
         } 
@@ -643,7 +653,6 @@ function transliterasiSingleKata(rawLatin) {
             }
         }
 
-        // 2. Pengecekan Sandhangan Vokal Panjang Huruf Kecil/Kapital
         let v = "";
         if (!isSwara && i < lowerLatin.length) {
             let sub3V = lowerLatin.substring(i, i+3);
@@ -703,7 +712,6 @@ function transliterasiSingleKata(rawLatin) {
                 else res += 'ꦿ'; 
             }
 
-            // Pemetaan Sandhangan Vokal Panjang & Biasa
             if (!isSwara) {
                 if (v === 'i') res += 'ꦶ';
                 else if (v === 'ii') res += 'ꦷ';
