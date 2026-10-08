@@ -1,7 +1,7 @@
 /**
  * SIMPLIFIED.JS
  * Modifikasi dari kbj.js untuk mendukung tambahan Aksara Rekan, Aksara Murda, Aksara Swara,
- * dan Vokal Panjang huruf kecil/kapital (aa, ii, uu, ree, lee, ai, au).
+ * Vokal Panjang (aa, ii, uu, ree, lee, ai, au), dan Panglancar Vokal Ber-tanda Hubung (mi-i -> miyi, mu-u -> muwu).
  */
 
 const KAMUS_AKSARA = {
@@ -493,17 +493,14 @@ function transliterasiSingleKata(rawLatin) {
 
     let latinProcessed = rawLatin;
 
-    // Kecualikan pemrosesan tanda hubung jika berada di antara dua vokal yang sama (seperti a-a, i-i, u-u)
+    // 1. Konversi vokal dengan tanda hubung ke panglancar paugeran (h/y/w) + Vokal Kedua
+    latinProcessed = latinProcessed.replace(/([aAEÊaeê])-([aiueoéèêAIUEOÉÈÊ])/g, '$1h$2');
+    latinProcessed = latinProcessed.replace(/([iIÉÈiéè])-([aiueoéèêAIUEOÉÈÊ])/g, '$1y$2');
+    latinProcessed = latinProcessed.replace(/([uUOuo])-([aiueoéèêAIUEOÉÈÊ])/g, '$1w$2');
+
+    // 2. Pemrosesan imbuhan/sufiks
     latinProcessed = latinProcessed.replace(/([a-zA-ZéèêÉÈÊ]+)-([a-zA-ZéèêÉÈÊ]+)/g, function(match, root, suffix) {
         if (root.toLowerCase() === suffix.toLowerCase()) return root + suffix;
-
-        let rootLast = root.slice(-1).toLowerCase();
-        let suffixFirst = suffix.charAt(0).toLowerCase();
-        let vowels = ['a','i','u','e','o','é','è','ê'];
-
-        if (vowels.includes(rootLast) && vowels.includes(suffixFirst) && rootLast === suffixFirst) {
-            return match; // Biarkan tetap ma-a agar dibaca terpisah menjadi ma-ha
-        }
 
         let suffixLower = suffix.toLowerCase();
         let isPepetSuffix = (suffixLower === 'aken' || suffixLower === 'kaken' || suffixLower === 'en' || suffixLower === 'nen');
@@ -511,6 +508,7 @@ function transliterasiSingleKata(rawLatin) {
 
         let lastChar = root.slice(-1).toLowerCase();
         let lastTwoChars = root.slice(-2).toLowerCase();
+        let vowels = ['a','i','u','e','o','é','è','ê'];
         
         if ((modSuffix.toLowerCase() === 'kaké' || modSuffix.toLowerCase() === 'kaken') && vowels.includes(lastChar)) {
             modSuffix = 'kxh' + modSuffix.substring(1); 
@@ -538,7 +536,7 @@ function transliterasiSingleKata(rawLatin) {
         }
     });
 
-    // Pengecualian Vokal Panjang: Jangan ubah vokal ganda panjang (aa, ii, uu, ai, au) menjadi h/y/w otomatis
+    // 3. Pengecualian Vokal Panjang tanpa tanda hubung (aa, ii, uu, ai, au)
     let prevLatin = "";
     while (latinProcessed !== prevLatin) {
         prevLatin = latinProcessed;
