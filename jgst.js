@@ -13,7 +13,7 @@ const jgstMap = {
   '\uA999': 'j̣a', '\uA99A': 'ña', '\uA99B': 'ṭa', '\uA99C': 'ṭha', '\uA99D': 'ḍa',
   '\uA99E': 'ḍha', '\uA99F': 'ṇa', '\uA9A0': 'ta', '\uA9A1': 'tha', '\uA9A2': 'da',
   '\uA9A3': 'dha', '\uA9A4': 'na', '\uA9A5': 'pa', '\uA9A6': 'p̣a', '\uA9A7': 'ba',
-  '\uA9A8': 'ḅa', '\uA9A9': 'ma', '\uA9AA': 'ya', '\uA9AB\uA9C0': 'r', '\uA9AB': 'ra',
+  '\uA9A8': 'ḅa', '\uA9A9': 'ma', '\uA9AA': 'ya', '\uA9AB\uA9C0': 'r/', '\uA9AB': 'ra',
   '\uA9AC': 'ṟa', '\uA9AD': 'la', '\uA9AE': 'wa', '\uA9AF': 'śa', '\uA9B0': 'ṣa',
   '\uA9B1': 'sa', '\uA9B2': 'ha', '\uA9B3': '', '\uA9C8': ',', '\uA9C9': '.',
   '\uA9D0': '0', '\uA9D1': '1', '\uA9D2': '2', '\uA9D3': '3', '\uA9D4': '4',
@@ -30,8 +30,8 @@ const rekanMap = {
 const sandhanganMap = {
   '\uA9B4': 'ā', '\uA9B5': 'o', '\uA9B6': 'i', '\uA9B7': 'ī', '\uA9B8': 'u',
   '\uA9B9': 'ū', '\uA9BA\uA9B4': 'o', '\uA9BA\uA9B5': 'õ', '\uA9BA': 'é', '\uA9BB\uA9B4': 'ꜹ',
-  '\uA9BB\uA9B5': 'ã', '\uA9BB': 'ꜽ', '\uA9BC\uA9B4': 'ö', '\uA9BC': 'ě', '\uA9BD': 'ṛě',
-  '\uA9BE': 'ya', '\uA9BF': 'ra', '\uA9C0': '/'
+  '\uA9BB\uA9B5': 'ã', '\uA9BB': 'ꜽ', '\uA9BC\uA9B4': 'ö', '\uA9BC': 'ě', '\uA9BD': 'ŕě',
+  '\uA9BE': 'ỿa', '\uA9BF': 'ŕ', '\uA9C0': '/'
 };
 
 function transliterateToJGST(text) {
