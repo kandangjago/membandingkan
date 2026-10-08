@@ -1,26 +1,7 @@
 /**
  * SIMPLIFIED.JS
- * Modifikasi dari kbj.js untuk mendukung tambahan Aksara Rekan, Aksara Murda, dan Aksara Swara (termasuk AI, AU, AA, II, UU, REE, & LEE).
- *
- * PANDUAN PENGETIKAN AKSARA REKAN BARU (Berdasarkan Pelafalan IPA Arab):
- * q   -> ꦐ (ق) - IPA: /q/
- * hh  -> ꦲ꦳ (ح) - IPA: /ħ/
- * xng -> ꦔ꦳ (ع) - IPA: /ʕ/
- * ts  -> ꦱ꦳ (ث) - IPA: /θ/
- * shh -> ꦰ꦳ (ص) - IPA: /sˤ/
- * xsy -> ꦯ꦳ (ش) - IPA: /ʃ/
- * dl  -> ꦭ꦳ (ض) - IPA: /dˤ/
- * tth -> ꦡ꦳ (ط) - IPA: /tˤ/
- * zh  -> ꦣ꦳ (ظ) - IPA: /ðˤ/
- * x   -> ꦑ꦳ (خ) - IPA: /x/
- * 
- * TAMBAHAN AKSARA MURDA:
- * C -> ꦖ
- * R -> ꦬ
- * 
- * TAMBAHAN AKSARA SWARA PANJANG:
- * AA -> ꦄꦴ, II -> ꦇ, UU -> ꦈꦴ, REE -> ꦉꦴ, LEE -> ꦋ
- * AI -> ꦍ, AU -> ꦎꦴ
+ * Modifikasi dari kbj.js untuk mendukung tambahan Aksara Rekan, Aksara Murda, Aksara Swara,
+ * dan Vokal Panjang huruf kecil/kapital (aa, ii, uu, ree, lee, ai, au).
  */
 
 const KAMUS_AKSARA = {
@@ -32,29 +13,21 @@ const KAMUS_AKSARA = {
     'kh':'ꦏ꦳', 'dz':'ꦢ꦳', 'gh':'ꦒ꦳',
     'sy':'ꦯ', 'sh':'ꦰ',
     'kx':'ꦏ', 'rx':'ꦫ', 'hx':'ꦲ', 'ngx':'ꦔ',
-    // Penambahan Aksara Rekan Baru
-    'q': 'ꦐ',
-    'hh': 'ꦲ꦳',
-    'xng': 'ꦔ꦳',
-    'ts': 'ꦱ꦳',
-    'shh': 'ꦰ꦳',
-    'xsy': 'ꦯ꦳',
-    'dl': 'ꦭ꦳',
-    'tth': 'ꦡ꦳',
-    'zh': 'ꦣ꦳',
-    'x': 'ꦑ꦳'
+    'q': 'ꦐ', 'hh': 'ꦲ꦳', 'xng': 'ꦔ꦳', 'ts': 'ꦱ꦳', 'shh': 'ꦰ꦳',
+    'xsy': 'ꦯ꦳', 'dl': 'ꦭ꦳', 'tth': 'ꦡ꦳', 'zh': 'ꦣ꦳', 'x': 'ꦑ꦳'
 };
 
 const AKSARA_MURDA = {
     'n':'ꦟ', 'k':'ꦑ', 't':'ꦡ', 's':'ꦯ', 'p':'ꦦ',
     'g':'ꦓ', 'b':'ꦨ', 'c':'ꦖ', 'ny':'ꦘ', 'j':'ꦙ', 'dh':'ꦝ',
-    'r':'ꦬ' // Penambahan aksara Murda R
+    'r':'ꦬ'
 };
 
+// Map Aksara Swara Kapital / Mandiri
 const SWARA_MAP = {
     'A':'ꦄ', 'I':'ꦆ', 'U':'ꦈ', 'E':'ꦄꦼ', 'É':'ꦌ', 'È':'ꦌ', 'Ê':'ꦄꦼ', 'O':'ꦎ',
-    'AI':'ꦍ', 'AU':'ꦎꦴ', // Aksara Swara Diftong
-    'AA':'ꦄꦴ', 'II':'ꦇ', 'UU':'ꦈꦴ', 'REE':'ꦉꦴ', 'LEE':'ꦋ' // Aksara Swara Panjang
+    'AI':'ꦍ', 'AU':'ꦎꦴ',
+    'AA':'ꦄꦴ', 'II':'ꦇ', 'UU':'ꦈꦴ', 'REE':'ꦉꦴ', 'LEE':'ꦋ'
 };
 
 const ANGKA = ['꧐','꧑','꧒','꧓','꧔','꧕','꧖','꧗','꧘','꧙'];
@@ -558,12 +531,25 @@ function transliterasiSingleKata(rawLatin) {
         }
     });
 
+    // Pengecualian Vokal Panjang: Jangan ubah vokal ganda panjang (aa, ii, uu, ai, au, ree, lee) menjadi h/y/w otomatis
     let prevLatin = "";
     while (latinProcessed !== prevLatin) {
         prevLatin = latinProcessed;
-        latinProcessed = latinProcessed.replace(/([aeêAEÊ])([aiueoéèê])/g, '$1h$2');
-        latinProcessed = latinProcessed.replace(/([iéèIÉÈ])([aiueoéèê])/g, '$1y$2');
-        latinProcessed = latinProcessed.replace(/([uoUO])([aiueoéèê])/g, '$1w$2');
+        latinProcessed = latinProcessed.replace(/(?<!a|i|u|e|o)([aAEÊ])([aieoéèê])(?!a|i|u|e|o)/gi, function(m, p1, p2) {
+            let combo = (p1 + p2).toLowerCase();
+            if (['aa', 'ai', 'au'].includes(combo)) return p1 + p2;
+            return p1 + 'h' + p2;
+        });
+        latinProcessed = latinProcessed.replace(/(?<!a|i|u|e|o)([iIÉÈ])([aiueoéèê])(?!a|i|u|e|o)/gi, function(m, p1, p2) {
+            let combo = (p1 + p2).toLowerCase();
+            if (['ii'].includes(combo)) return p1 + p2;
+            return p1 + 'y' + p2;
+        });
+        latinProcessed = latinProcessed.replace(/(?<!a|i|u|e|o)([uUO])([aiueoéèê])(?!a|i|u|e|o)/gi, function(m, p1, p2) {
+            let combo = (p1 + p2).toLowerCase();
+            if (['uu'].includes(combo)) return p1 + p2;
+            return p1 + 'w' + p2;
+        });
     }
 
     let res = "";
@@ -609,21 +595,20 @@ function transliterasiSingleKata(rawLatin) {
         let c3_upper = c3_raw.toUpperCase();
         let c2_upper = c2_raw.toUpperCase();
 
-        // Pengecekan Vokal Panjang 3 Karakter (REE & LEE)
-        if ((c3_upper === 'REE' || c3_upper === 'LEE') && SWARA_MAP[c3_upper]) {
+        // 1. Pengecekan Aksara Swara Panjang Kapital Mandiri (REE & LEE / AA, II, UU, AI, AU)
+        if ((c3_upper === 'REE' || c3_upper === 'LEE') && c3_raw === c3_upper && SWARA_MAP[c3_upper]) {
             c = c3_upper; isSwara = true; jump = 3;
         } 
-        // Pengecekan Vokal Panjang / Diftong 2 Karakter (AA, II, UU, AI, AU)
-        else if (SWARA_MAP[c2_upper] && ['AA', 'II', 'UU', 'AI', 'AU'].includes(c2_upper)) {
+        else if (SWARA_MAP[c2_upper] && c2_raw === c2_upper && ['AA', 'II', 'UU', 'AI', 'AU'].includes(c2_upper)) {
             c = c2_upper; isSwara = true; jump = 2;
         } 
         else if ((c2_raw === 'NY' || c2_raw === 'Ny') && AKSARA_MURDA['ny']) {
             c = 'ny'; jump = 2; isMurda = true;
         } else if (c1_raw === 'J' && AKSARA_MURDA['j']) {
             c = 'j'; jump = 1; isMurda = true;
-        } else if (['ngx', 'xng', 'shh', 'xsy', 'tth'].includes(c3)) {
+        } else if (['ngx'].includes(c3)) {
             c = c3; jump = 3;
-        } else if (['ng','ny','dh','th','nx','kh','dz','gh','kx','rx','hx','sy','sh','hh','ts','dl','zh'].includes(c2)) {
+        } else if (['ng','ny','dh','th','nx','kh','dz','gh','kx','rx','hx','sy','sh'].includes(c2)) {
             c = c2; jump = 2;
         } else if (KAMUS_AKSARA[c1]) {
             c = c1; jump = 1;
@@ -658,9 +643,18 @@ function transliterasiSingleKata(rawLatin) {
             }
         }
 
+        // 2. Pengecekan Sandhangan Vokal Panjang Huruf Kecil/Kapital
         let v = "";
-        if (!isSwara && i < lowerLatin.length && /[aieéèêou]/.test(lowerLatin[i])) {
-            v = lowerLatin[i]; i++;
+        if (!isSwara && i < lowerLatin.length) {
+            let sub3V = lowerLatin.substring(i, i+3);
+            let sub2V = lowerLatin.substring(i, i+2);
+            if (sub3V === 'ree' || sub3V === 'lee') {
+                v = sub3V; i += 3;
+            } else if (['aa', 'ii', 'uu', 'ai', 'au'].includes(sub2V)) {
+                v = sub2V; i += 2;
+            } else if (/[aieéèêou]/.test(lowerLatin[i])) {
+                v = lowerLatin[i]; i += 1;
+            }
         }
 
         let canTakeSandhangan = !/([꧀ꦁꦂꦃ\u200C]|^)$/.test(res);
@@ -709,9 +703,17 @@ function transliterasiSingleKata(rawLatin) {
                 else res += 'ꦿ'; 
             }
 
+            // Pemetaan Sandhangan Vokal Panjang & Biasa
             if (!isSwara) {
                 if (v === 'i') res += 'ꦶ';
+                else if (v === 'ii') res += 'ꦷ';
                 else if (v === 'u') res += 'ꦸ';
+                else if (v === 'uu') res += 'ꦹ';
+                else if (v === 'aa') res += 'ꦴ';
+                else if (v === 'ai') res += 'ꦻ';
+                else if (v === 'au') res += 'ꦻꦴ';
+                else if (v === 'ree') res += 'ꦉꦴ';
+                else if (v === 'lee') res += 'ꦋ';
                 else if (v === 'é' || v === 'è') res += 'ꦺ';
                 else if (v === 'e' || v === 'ê') res += 'ꦼ';
                 else if (v === 'o') res += 'ꦺꦴ';
