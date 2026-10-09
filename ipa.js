@@ -14,6 +14,9 @@ function convertJGSTtoIPA(jgstStr, rawLatinToken) {
         let str = word.toLowerCase().replace(/\/$/, '');
         const vowels = 'aāiīuūěéèeoꜽꜷṛḷ';
 
+        // Degeminasi konsonan ganda hasil morfologi/pasangan (nn -> n, kk -> k, rr -> r, dst.)
+        str = str.replace(/([^aāiīuūěéèeoꜽꜷṛḷ\s])\1+/gi, '$1');
+
         // 1. Deteksi Ha Tipis vs Ha Tebal berdasarkan input Latin asli user
         const isLatinStartWithH = /^h/i.test(rawLatinToken || '');
         
@@ -33,9 +36,9 @@ function convertJGSTtoIPA(jgstStr, rawLatinToken) {
 
             if (isVowelEnd) {
                 if (lastChar === 'a') {
-                    // A. Jika suku kata penultima (sebelum akhir) berupa vokal 'a' terbuka (tanpa konsonan penutup):
-                    // Pasangan vokal terbuka (seperti 'ga-ra' di nagara, 'da-ya' di kabudaya) ikut berubah menjadi 'ɔ'.
-                    // Pengecualian: kata berakhiran '-ana' (seperti kahanana) vokal penultimanya tetap 'a'.
+                    // A. Jika suku kata penultima (sebelum akhir) berupa vokal 'a' terbuka:
+                    // Pasangan vokal terbuka ikut berubah menjadi 'ɔ'.
+                    // Pengecualian: kata berakhiran '-ana' (seperti kahanana, mangana) vokal penultimanya tetap 'a'.
                     if (!/ana$/i.test(str)) {
                         str = str.replace(/([bcdfghjklmnpqrstvwxyzñṅṇṭḍcjywśṣḥqxfvz]*a)([bcdfghjklmnpqrstvwxyzñṅṇṭḍcjywśṣḥqxfvz]+a)$/i, function(match, penult, ult) {
                             return penult.replace(/a/g, 'ɔ') + ult;
@@ -47,7 +50,7 @@ function convertJGSTtoIPA(jgstStr, rawLatinToken) {
                 }
             } else {
                 // Untuk kata yang diakhiri suku kata tertutup (konsonan mati):
-                // Seluruh vokal 'a' pada kata dasar/imbuhan tetap dibaca 'a' (misal: gamelan, prasasat, salaman, pralambang, pituduh).
+                // Seluruh vokal 'a' pada kata dasar/imbuhan tetap dibaca 'a'
                 
                 // Vokal miring pada suku kata tertutup akhir (i->ɪ, u->ʊ, e->ɛ, o->ɔ)
                 str = str.replace(new RegExp(`([${vowels}])([^${vowels}]*)$`), function(match, vowel, cons) {
@@ -91,6 +94,9 @@ function convertJGSTtoIPA(jgstStr, rawLatinToken) {
         res = res.replace(/^w/g, 'w̤').replace(/^j/g, 'j̤');
         res = res.replace(/^([bcdfghjklmnpqrstvwxyzḥŋṙṃñṅṇʈɖtʃdʒʃʂqxfvz])w/g, '$1w̤');
         res = res.replace(/^([bcdfghjklmnpqrstvwxyzḥŋṙṃñṅṇʈɖtʃdʒʃʂqxfvz])j/g, '$1j̤');
+
+        // Pengamanan tambahan untuk memastikan tidak ada simbol IPA ganda berturut-turut
+        res = res.replace(/(tʃ|dʒ|.)\1+/g, '$1');
 
         return res;
     });
