@@ -24,7 +24,7 @@ const rekanMap = {
   '\uA9A5\uA9B3': 'fa', '\uA9AE\uA9B3': 'va', '\uA997\uA9B3': 'za', '\uA9A2\uA9B3': 'dza',
   '\uA9B2\uA9B3': 'ḥa', '\uA994\uA9B3': '‘a', '\uA9B1\uA9B3': 'ṡa', '\uA9B0\uA9B3': 'ṣa',
   '\uA9AF\uA9B3': 'śa', '\uA9AD\uA9B3': 'ḍa', '\uA9A1\uA9B3': 'ṭa', '\uA9A3\uA9B3': 'ẓa',
-  '\uA98F\uA9B3': 'xa', '\uA990\uA9B3': 'xa'
+  '\uA98F\uA9B3': 'xa', '\uA990\uA9B3': 'xa', '\uA991\uA9B3': 'xa'
 };
 
 const sandhanganMap = {
