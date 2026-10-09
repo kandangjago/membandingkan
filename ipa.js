@@ -36,29 +36,21 @@ function convertJGSTtoIPA(jgstStr, rawLatinToken) {
 
             if (isVowelEnd) {
                 if (lastChar === 'a') {
-                    // A. Jika suku kata penultima (sebelum akhir) berupa vokal 'a' terbuka:
-                    // Pasangan vokal terbuka ikut berubah menjadi 'ɔ'.
-                    // Pengecualian: kata berakhiran '-ana' (seperti kahanana, mangana) vokal penultimanya tetap 'a'.
                     if (!/ana$/i.test(str)) {
                         str = str.replace(/([bcdfghjklmnpqrstvwxyzñṅṇṭḍcjywśṣḥqxfvz]*a)([bcdfghjklmnpqrstvwxyzñṅṇṭḍcjywśṣḥqxfvz]+a)$/i, function(match, penult, ult) {
                             return penult.replace(/a/g, 'ɔ') + ult;
                         });
                     }
-                    
-                    // B. Vokal 'a' terbuka di akhir kata (ultima) selalu berubah menjadi 'ɔ'
                     str = str.replace(/a$/i, 'ɔ');
                 }
             } else {
-                // Untuk kata yang diakhiri suku kata tertutup (konsonan mati):
-                // Seluruh vokal 'a' pada kata dasar/imbuhan tetap dibaca 'a'
-                
                 // Vokal miring pada suku kata tertutup akhir (i->ɪ, u->ʊ, e->ɛ, o->ɔ)
                 str = str.replace(new RegExp(`([${vowels}])([^${vowels}]*)$`), function(match, vowel, cons) {
                     if (vowel === 'i') return 'ɪ' + cons;
                     if (vowel === 'u') return 'ʊ' + cons;
                     if (vowel === 'é' || vowel === 'è' || vowel === 'e') return 'ɛ' + cons;
                     if (vowel === 'o') return 'ɔ' + cons;
-                    return vowel + cons; // vokal 'a' tetap 'a'
+                    return vowel + cons;
                 });
                 
                 // Harmony vokal untuk suku kata tertutup
@@ -67,11 +59,22 @@ function convertJGSTtoIPA(jgstStr, rawLatinToken) {
             }
         }
 
-        // Normalisasi vokal jejeg
+        // 3. Aturan Khusus Vokal E-Miring (ɛ) Berimbuhan & Miring Ganda
+        // A. Kata dengan 2+ e-taling yang diakhiri konsonan/imbuhan (bukan vokal e terbuka)
+        if (/[éèɛ].*?[éèɛ]/i.test(str) && !/[éèe]$/i.test(str)) {
+            str = str.replace(/[éè]/g, 'ɛ');
+        }
+        
+        // B. Kata dasar ber-vokal e-miring yang mendapat panambang (-an, -en, -e, -i, -a, -ana, -ne, -ake, -aken, -ipun)
+        if (/(an|en|e|i|a|ana|ne|ake|aken|ipun)$/i.test(str)) {
+            str = str.replace(/[éè]/g, 'ɛ');
+        }
+
+        // Normalisasi sisa vokal é/è (e-jejeg) dan ě (pepet)
         str = str.replace(/[éè]/g, 'e'); 
         str = str.replace(/ě/g, 'ə'); 
 
-        // 3. Pemetaan Karakter IPA Utuh
+        // 4. Pemetaan Karakter IPA Utuh
         const ipaMap = {
             'ā': 'aː', 'ī': 'iː', 'ū': 'uː',
             'ñ': 'ɲ', 'ṅ': 'ŋ', 'ṇ': 'ɳ',
@@ -90,12 +93,12 @@ function convertJGSTtoIPA(jgstStr, rawLatinToken) {
             res += (ipaMap[char] !== undefined) ? ipaMap[char] : char;
         }
 
-        // 4. Penentuan Ya Tebal [j̤] & Wa Tebal [w̤]
+        // 5. Penentuan Ya Tebal [j̤] & Wa Tebal [w̤]
         res = res.replace(/^w/g, 'w̤').replace(/^j/g, 'j̤');
         res = res.replace(/^([bcdfghjklmnpqrstvwxyzḥŋṙṃñṅṇʈɖtʃdʒʃʂqxfvz])w/g, '$1w̤');
         res = res.replace(/^([bcdfghjklmnpqrstvwxyzḥŋṙṃñṅṇʈɖtʃdʒʃʂqxfvz])j/g, '$1j̤');
 
-        // Pengamanan tambahan untuk memastikan tidak ada simbol IPA ganda berturut-turut
+        // Degeminasi simbol IPA ganda berturut-turut
         res = res.replace(/(tʃ|dʒ|.)\1+/g, '$1');
 
         return res;
